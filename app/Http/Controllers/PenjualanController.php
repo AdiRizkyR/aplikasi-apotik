@@ -1,0 +1,189 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+use App\Models\Penjualan;
+use App\Models\DetailPenjualan;
+use App\Models\Obat;
+
+class PenjualanController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        //
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        //
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    // public function store(Request $request)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+    //         $request->validate([
+    //             'user_id' => 'required|exists:users,id',
+    //             'pelanggan_id' => 'required|exists:pelanggans,id',
+    //             'tanggal_pesan' => 'required|date',
+    //             'tanggal_terima' => 'required|date',
+    //             'total' => 'required|numeric',
+    //             'detail' => 'required|array|min:1',
+    //         ]);
+
+    //         // Simpan data penjualan
+    //         $penjualan = Penjualan::create([
+    //             'user_id' => $request->user_id,
+    //             'pelanggan_id' => $request->pelanggan_id,
+    //             'tanggal_pesan' => $request->tanggal_pesan,
+    //             'tanggal_terima' => $request->tanggal_terima,
+    //             'total' => $request->total,
+    //         ]);
+
+    //         // Proses setiap item yang dibeli
+    //         foreach ($request->detail as $item) {
+    //             $jumlahDibutuhkan = $item['jumlah'];
+    //             $dataObatId = Obat::findOrFail($item['obat_id'])->data_obat_id;
+
+    //             // Ambil stok berdasarkan expired terdekat dan cukup
+    //             $stokList = Obat::where('data_obat_id', $dataObatId)
+    //                 ->where('stok', '>', 0)
+    //                 ->orderBy('expired', 'asc')
+    //                 ->get();
+
+    //             foreach ($stokList as $stokItem) {
+    //                 if ($jumlahDibutuhkan <= 0) break;
+
+    //                 $pakaiJumlah = min($stokItem->stok, $jumlahDibutuhkan);
+
+    //                 // Kurangi stok
+    //                 $stokItem->stok -= $pakaiJumlah;
+    //                 $stokItem->save();
+
+    //                 // Simpan detail penjualan
+    //                 DetailPenjualan::create([
+    //                     'penjualan_id' => $penjualan->id,
+    //                     'obat_id' => $stokItem->id,
+    //                     'jumlah_beli' => $pakaiJumlah,
+    //                 ]);
+
+    //                 $jumlahDibutuhkan -= $pakaiJumlah;
+    //             }
+
+    //             if ($jumlahDibutuhkan > 0) {
+    //                 // Stok tidak cukup
+    //                 throw new \Exception("Stok untuk obat ID {$item['obat_id']} tidak mencukupi.");
+    //             }
+    //         }
+
+    //         DB::commit();
+
+    //         return redirect()->route('penjualan')->with('success', 'Penjualan berhasil disimpan!');
+    //     } catch (\Exception $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()->with('error', 'Gagal menyimpan penjualan: ' . $e->getMessage());
+    //     }
+    // }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+            'pelanggan_id' => 'required|exists:pelanggans,id',
+            'tanggal_pesan' => 'required|date',
+            'tanggal_terima' => 'required|date',
+            'total' => 'required|numeric|min:0',
+            'detail' => 'required|array|min:1',
+            'detail.*.obat_id' => 'required|exists:obats,id',
+            'detail.*.jumlah' => 'required|numeric|min:1',
+            'detail.*.harga' => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+        try {
+            // Simpan data utama penjualan
+            $penjualan = Penjualan::create([
+                'user_id' => $request->user_id,
+                'pelanggan_id' => $request->pelanggan_id,
+                'tanggal_pesan' => $request->tanggal_pesan,
+                'tanggal_terima' => $request->tanggal_terima,
+                'total' => $request->total,
+            ]);
+
+            foreach ($request->detail as $item) {
+                $obat = Obat::findOrFail($item['obat_id']);
+
+                // Validasi stok
+                if ($obat->stok < $item['jumlah']) {
+                    throw new \Exception("Stok obat '{$obat->nama}' tidak mencukupi.");
+                }
+
+                // Simpan detail penjualan
+                DetailPenjualan::create([
+                    'penjualan_id' => $penjualan->id,
+                    'obat_id' => $item['obat_id'],
+                    'jumlah_beli' => $item['jumlah'],
+                    'harga' => $item['harga'],
+                    'subtotal' => $item['jumlah'] * $item['harga'],
+                ]);
+
+                // Kurangi stok obat
+                $obat->stok -= $item['jumlah'];
+                $obat->save();
+            }
+
+            DB::commit();
+
+            return redirect()->route('penjualan')->with('success', 'Penjualan berhasil disimpan!');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', 'Gagal menyimpan penjualan: ' . $e->getMessage());
+        }
+    }
+
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(string $id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(string $id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, string $id)
+    {
+        //
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(string $id)
+    {
+        //
+    }
+}
