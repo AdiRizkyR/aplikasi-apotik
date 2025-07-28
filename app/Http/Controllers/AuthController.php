@@ -16,32 +16,6 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    // public function login(Request $request)
-    // {
-    //     $credentials = $request->only('username', 'password');
-
-    //     $user = User::where('username', $credentials['username'])->first();
-
-    //     if ($user && Hash::check($credentials['password'], $user->password)) {
-    //         Auth::login($user, $request->filled('remember'));
-    //         return redirect()->intended('/dashboard'); // ganti dengan route tujuan setelah login
-    //     }
-
-    //     return back()->withErrors([
-    //         'username' => 'Username atau password salah.',
-    //     ])->withInput();
-    // }
-
-    // public function logout(Request $request)
-    // {
-    //     Auth::logout();
-    //     $request->session()->invalidate();
-    //     $request->session()->regenerateToken();
-
-    //     return redirect()->route('login');
-    // }
-    // end login & logout
-
     public function login(Request $request)
     {
         $request->validate([

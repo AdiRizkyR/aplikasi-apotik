@@ -32,9 +32,22 @@ class viewController extends Controller
     // end::auth
 
     // begin::dashboard
+    // public function dashboard()
+    // {
+    //     return view('layout.dashboard');
+    // }
+
     public function dashboard()
     {
-        return view('layout.dashboard');
+        return view('layout.dashboard', [
+            'userCount'       => User::count(),
+            'supplierCount'   => Supplier::count(),
+            'pelangganCount'  => Pelanggan::count(),
+            'obatCount'       => DataObat::count(),
+            'stokTotal'       => Obat::sum('stok'),
+            'penjualanCount'  => Penjualan::count(),
+            'pemesananCount'  => Pemesanan::count(),
+        ]);
     }
     // end::dashboard
 
@@ -178,10 +191,10 @@ class viewController extends Controller
     // end::obat masuk
 
     // begin::report
-        public function report()
-        {
-            return view('report.report');
-        }
+        // public function report()
+        // {
+        //     return view('report.report');
+        // }
 
         // public function exportPDF(Request $request)
         // {
@@ -189,10 +202,6 @@ class viewController extends Controller
         //     $start = $request->start ?? now()->startOfMonth();
         //     $end = $request->end ?? now();
         //     $filterId = $request->filter_id;
-
-        //     if (!$jenis || !$start || !$end) {
-        //         return redirect()->back()->with('error', 'Semua input wajib diisi!');
-        //     }
 
         //     $modelMap = [
         //         'users' => \App\Models\User::class,
@@ -209,30 +218,28 @@ class viewController extends Controller
         //     }
 
         //     $model = $modelMap[$jenis];
+        //     $query = $model::query()->whereBetween('created_at', [$start, $end]);
 
-        //     $query = $model::query();
-
-        //     // filter berdasarkan tanggal
-        //     $query->whereBetween('created_at', [$start, $end]);
-
-        //     // filter berdasarkan relasi
-        //     if ($filterId) {
-        //         if (in_array($jenis, ['pemesanans', 'obat_masuks'])) {
-        //             $query->where('supplier_id', $filterId)->orWhere('user_id', $filterId);
-        //         } elseif ($jenis === 'penjualans') {
-        //             $query->where('pelanggan_id', $filterId)->orWhere('user_id', $filterId);
-        //         }
-        //     }
-
-        //     // eager load relasi jika perlu untuk PDF
+        //     // Tambahan relasi
         //     $with = [];
 
         //     if ($jenis === 'pemesanans') {
-        //         $with = ['user', 'supplier'];
+        //         $with = ['user', 'supplier', 'detailPemesanans.dataObat'];
+        //         if ($filterId) {
+        //             $query->where('user_id', $filterId)->orWhere('supplier_id', $filterId);
+        //         }
         //     } elseif ($jenis === 'obat_masuks') {
-        //         $with = ['pemesanan.user', 'pemesanan.supplier'];
+        //         $with = ['pemesanan.user', 'pemesanan.supplier', 'detailObatMasuks.dataObat'];
+        //         if ($filterId) {
+        //             $query->whereHas('pemesanan', function ($q) use ($filterId) {
+        //                 $q->where('user_id', $filterId)->orWhere('supplier_id', $filterId);
+        //             });
+        //         }
         //     } elseif ($jenis === 'penjualans') {
-        //         $with = ['user', 'pelanggan'];
+        //         $with = ['user', 'pelanggan', 'detailPenjualans.obat.dataObat'];
+        //         if ($filterId) {
+        //             $query->where('user_id', $filterId)->orWhere('pelanggan_id', $filterId);
+        //         }
         //     }
 
         //     if (!empty($with)) {
@@ -240,198 +247,263 @@ class viewController extends Controller
         //     }
 
         //     $data = $query->get();
+
+        //     // Landscape jika tabel kompleks
+        //     $isLandscape = in_array($jenis, ['pemesanans', 'obat_masuks', 'penjualans']);
+        //     $orientation = $isLandscape ? 'landscape' : 'portrait';
 
         //     $pdf = Pdf::loadView('report.pdf', [
         //         'data' => $data,
         //         'start' => $start,
         //         'end' => $end,
-        //         'jenis' => $jenis
-        //     ])->setPaper('A4');
+        //         'jenis' => $jenis,
+        //     ])->setPaper('A4', $orientation);
 
         //     return $pdf->stream('laporan_' . $jenis . '_' . now()->format('YmdHis') . '.pdf');
         // }
 
-        // public function exportPDF(Request $request)
-        // {
-        //     $jenis = $request->jenis;
-        //     $start = $request->start ?? now()->startOfMonth();
-        //     $end = $request->end ?? now();
-        //     $filterId = $request->filter_id;
-
-        //     if (!$jenis || !$start || !$end) {
-        //         return redirect()->back()->with('error', 'Semua input wajib diisi!');
-        //     }
-
-        //     $modelMap = [
-        //         'users' => \App\Models\User::class,
-        //         'suppliers' => \App\Models\Supplier::class,
-        //         'pelanggans' => \App\Models\Pelanggan::class,
-        //         'pemesanans' => \App\Models\Pemesanan::class,
-        //         'obat_masuks' => \App\Models\ObatMasuk::class,
-        //         'obats' => \App\Models\Obat::class,
-        //         'penjualans' => \App\Models\Penjualan::class,
-        //     ];
-
-        //     if (!array_key_exists($jenis, $modelMap)) {
-        //         return abort(404);
-        //     }
-
-        //     $model = $modelMap[$jenis];
-
-        //     $query = $model::query();
-
-        //     // Filter tanggal
-        //     $query->whereBetween('created_at', [$start, $end]);
-
-        //     // Filter relasi
-        //     if ($filterId) {
-        //         if (in_array($jenis, ['pemesanans', 'obat_masuks'])) {
-        //             $query->where(function ($q) use ($filterId) {
-        //                 $q->where('supplier_id', $filterId)
-        //                 ->orWhere('user_id', $filterId);
-        //             });
-        //         } elseif ($jenis === 'penjualans') {
-        //             $query->where(function ($q) use ($filterId) {
-        //                 $q->where('pelanggan_id', $filterId)
-        //                 ->orWhere('user_id', $filterId);
-        //             });
-        //         }
-        //     }
-
-        //     // Eager Load relasi
-        //     $with = [];
-
-        //     if ($jenis === 'pemesanans') {
-        //         $with = ['user', 'supplier'];
-        //     } elseif ($jenis === 'obat_masuks') {
-        //         $with = ['pemesanan.user', 'pemesanan.supplier'];
-        //     } elseif ($jenis === 'penjualans') {
-        //         $with = ['user', 'pelanggan'];
-        //     } elseif ($jenis === 'obats') {
-        //         $with = ['dataObat'];
-        //     }
-
-        //     if (!empty($with)) {
-        //         $query->with($with);
-        //     }
-
-        //     $data = $query->get();
-
-        //     // Deteksi orientasi landscape jika kolom terlalu banyak (misalnya lebih dari 8 kolom)
-        //     $attributes = $data->first()?->getAttributes() ?? [];
-        //     $totalKolom = count(array_filter(array_keys($attributes), fn($col) => !in_array($col, ['created_at', 'updated_at', 'remember_token'])));
-
-        //     $orientasi = $totalKolom > 8 ? 'landscape' : 'portrait';
-
-        //     $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('report.pdf', [
-        //         'data' => $data,
-        //         'start' => $start,
-        //         'end' => $end,
-        //         'jenis' => $jenis
-        //     ])->setPaper('a4', $orientasi);
-
-        //     return $pdf->stream('laporan_' . $jenis . '_' . now()->format('YmdHis') . '.pdf');
-        // }
-
-        public function exportPDF(Request $request)
-        {
-            $jenis = $request->jenis;
-            $start = $request->start ?? now()->startOfMonth();
-            $end = $request->end ?? now();
-            $filterId = $request->filter_id;
-
-            $modelMap = [
-                'users' => \App\Models\User::class,
-                'suppliers' => \App\Models\Supplier::class,
-                'pelanggans' => \App\Models\Pelanggan::class,
-                'pemesanans' => \App\Models\Pemesanan::class,
-                'obat_masuks' => \App\Models\ObatMasuk::class,
-                'obats' => \App\Models\Obat::class,
-                'penjualans' => \App\Models\Penjualan::class,
-            ];
-
-            if (!array_key_exists($jenis, $modelMap)) {
-                return abort(404);
+        // report user
+            public function reportUser()
+            {
+                return view('report.user.reportUser');
             }
 
-            $model = $modelMap[$jenis];
-            $query = $model::query()->whereBetween('created_at', [$start, $end]);
+            public function printReportUser(Request $request)
+            {
+                $request->validate([
+                    'jenis' => 'required|in:users,suppliers,pelanggans'
+                ]);
 
-            // Tambahan relasi
-            $with = [];
+                $jenis = $request->jenis;
+                $start = now()->startOfYear(); // bisa disesuaikan
+                $end = now();
 
-            if ($jenis === 'pemesanans') {
-                $with = ['user', 'supplier', 'detailPemesanans.dataObat'];
-                if ($filterId) {
-                    $query->where('user_id', $filterId)->orWhere('supplier_id', $filterId);
+                switch ($jenis) {
+                    case 'users':
+                        $data = User::all();
+                        break;
+                    case 'suppliers':
+                        $data = Supplier::all();
+                        break;
+                    case 'pelanggans':
+                        $data = Pelanggan::all();
+                        break;
+                    default:
+                        abort(404);
                 }
-            } elseif ($jenis === 'obat_masuks') {
-                $with = ['pemesanan.user', 'pemesanan.supplier', 'detailObatMasuks.dataObat'];
-                if ($filterId) {
-                    $query->whereHas('pemesanan', function ($q) use ($filterId) {
-                        $q->where('user_id', $filterId)->orWhere('supplier_id', $filterId);
-                    });
-                }
-            } elseif ($jenis === 'penjualans') {
-                $with = ['user', 'pelanggan', 'detailPenjualans.obat.dataObat'];
-                if ($filterId) {
-                    $query->where('user_id', $filterId)->orWhere('pelanggan_id', $filterId);
-                }
+
+                $pdf = Pdf::loadView('report.user.pdf', compact('data', 'jenis', 'start', 'end'))->setPaper('a4');
+                return $pdf->stream("laporan_{$jenis}_" . now()->format('Ymd_His') . ".pdf");
+            }
+        // end report user
+
+        // report pemesanan
+            public function reportPemesanan()
+            {
+                return view('report.pemesanan.reportPemesanan');
             }
 
-            if (!empty($with)) {
-                $query->with($with);
+            public function reportPemesananPrint(Request $request)
+            {
+                $query = Pemesanan::with(['user', 'supplier', 'detailPemesanans.dataObat']);
+
+                // Filter berdasarkan jenis
+                if ($request->filter !== 'all') {
+                    if ($request->filter == 'user') {
+                        $query->where('user_id', $request->filter_value);
+                    } elseif ($request->filter == 'supplier') {
+                        $query->where('supplier_id', $request->filter_value);
+                    } elseif ($request->filter == 'obat') {
+                        $query->whereHas('detailPemesanans', function ($q) use ($request) {
+                            $q->where('data_obat_id', $request->filter_value);
+                        });
+                    }
+                }
+
+                // Filter waktu
+                $start = $end = now();
+                if ($request->waktu == 'tanggal') {
+                    $start = $end = $request->tanggal;
+                    $query->whereDate('tanggal_pesan', $request->tanggal);
+                } elseif ($request->waktu == 'bulan') {
+                    [$year, $month] = explode('-', $request->bulan);
+                    $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
+                    $start = Carbon::create($year, $month)->startOfMonth();
+                    $end = Carbon::create($year, $month)->endOfMonth();
+                } elseif ($request->waktu == 'tahun') {
+                    $query->whereYear('tanggal_pesan', $request->tahun);
+                    $start = Carbon::create($request->tahun)->startOfYear();
+                    $end = Carbon::create($request->tahun)->endOfYear();
+                }
+
+                $data = $query->get();
+
+                $pdf = Pdf::loadView('report.pemesanan.pdf', [
+                    'data' => $data,
+                    'jenis' => 'pemesanans',
+                    'start' => $start,
+                    'end' => $end
+                ])->setPaper('a4', 'landscape'); // atur ukuran dan orientasi landscape
+
+                return $pdf->stream('laporan_pemesanan.pdf');
+            }
+        // end report pemesanan
+
+        // obat masuk
+            public function reportObatMasuk()
+            {
+                return view('report.obatMasuk.reportObatMasuk');
             }
 
-            $data = $query->get();
+            public function reportObatMasukPrint(Request $request)
+            {
+                $query = ObatMasuk::with([
+                    'pemesanan.user',
+                    'pemesanan.supplier',
+                    'detailObatMasuks.dataObat'
+                ]);
 
-            // Landscape jika tabel kompleks
-            $isLandscape = in_array($jenis, ['pemesanans', 'obat_masuks', 'penjualans']);
-            $orientation = $isLandscape ? 'landscape' : 'portrait';
+                $start = $end = now();
 
-            $pdf = Pdf::loadView('report.pdf', [
-                'data' => $data,
-                'start' => $start,
-                'end' => $end,
-                'jenis' => $jenis,
-            ])->setPaper('A4', $orientation);
+                if ($request->waktu === 'tanggal') {
+                    $start = $end = $request->tanggal;
+                    $query->whereDate('tanggal_terima', $request->tanggal);
+                } elseif ($request->waktu === 'bulan') {
+                    [$year, $month] = explode('-', $request->bulan);
+                    $query->whereYear('tanggal_terima', $year)->whereMonth('tanggal_terima', $month);
+                    $start = Carbon::create($year, $month)->startOfMonth();
+                    $end = Carbon::create($year, $month)->endOfMonth();
+                } elseif ($request->waktu === 'tahun') {
+                    $query->whereYear('tanggal_terima', $request->tahun);
+                    $start = Carbon::create($request->tahun)->startOfYear();
+                    $end = Carbon::create($request->tahun)->endOfYear();
+                }
 
-            return $pdf->stream('laporan_' . $jenis . '_' . now()->format('YmdHis') . '.pdf');
-        }
+                $data = $query->get();
 
-        public function reportUser()
-        {
-            return view('report.user.reportUser');
-        }
+                $pdf = Pdf::loadView('report.obatMasuk.pdf', [
+                    'data' => $data,
+                    'jenis' => $request->jenis,
+                    'start' => $start,
+                    'end' => $end
+                ])->setPaper('a4', 'landscape');
 
-        public function reportSupplier()
-        {
-            return view('report.supplier.reportSupplier');
-        }
+                return $pdf->stream('laporan_obat_masuk.pdf');
+            }
+        // end obat masuk
 
-        public function reportPelanggan()
-        {
-            return view('report.pelanggan.reportPelanggan');
-        }
-
-        public function reportPemesanan()
-        {
-            return view('report.pemesanan.reportPemesanan');
-        }
-
-        public function reportObatMasuk()
-        {
-            return view('report.obatMasuk.reportObatMasuk');
-        }
-
+        // penjualan
         public function reportPenjualan()
         {
             return view('report.penjualan.reportPenjualan');
         }
 
+        public function reportPenjualanPrint(Request $request)
+        {
+            $query = Penjualan::with(['user', 'pelanggan', 'detailPenjualans.obat.dataObat']);
+
+            $start = $end = now();
+
+            if ($request->waktu == 'tanggal') {
+                $start = $end = $request->tanggal;
+                $query->whereDate('tanggal_pesan', $request->tanggal);
+            } elseif ($request->waktu == 'bulan') {
+                [$year, $month] = explode('-', $request->bulan);
+                $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
+                $start = Carbon::create($year, $month)->startOfMonth();
+                $end = Carbon::create($year, $month)->endOfMonth();
+            } elseif ($request->waktu == 'tahun') {
+                $query->whereYear('tanggal_pesan', $request->tahun);
+                $start = Carbon::create($request->tahun)->startOfYear();
+                $end = Carbon::create($request->tahun)->endOfYear();
+            }
+
+            $data = $query->get();
+
+            $pdf = Pdf::loadView('report.penjualan.pdf', [
+                'data' => $data,
+                'jenis' => $request->jenis,
+                'start' => $start,
+                'end' => $end
+            ])->setPaper('a4', 'landscape');
+
+            return $pdf->stream('laporan_penjualan.pdf');
+        }
+        // end penjualan
+
+        // obat
         public function reportObat()
         {
             return view('report.obat.reportObat');
         }
+
+        public function printReportObat(Request $request)
+        {
+            $request->validate([
+                'jenis' => 'required|in:expired,stok,laporan',
+            ]);
+
+            $jenis = $request->jenis;
+            $today = now();
+
+            switch ($jenis) {
+                case 'expired':
+                    $data = Obat::with('dataObat')
+                        ->whereDate('expired', '<', $today)
+                        ->get();
+                    break;
+
+                case 'stok':
+                    $data = Obat::with('dataObat')
+                        ->where(function ($query) use ($today) {
+                            $query->whereNull('expired')
+                                ->orWhereDate('expired', '>=', $today->addMonth());
+                        })
+                        ->get()
+                        ->groupBy(fn($item) => $item->dataObat->nama . '-' . $item->harga)
+                        ->map(function ($group) {
+                            return [
+                                'nama' => $group->first()->dataObat->nama,
+                                'kategori' => $group->first()->dataObat->kategori ?? '-',
+                                'jenis' => $group->first()->dataObat->jenis ?? '-',
+                                'harga' => $group->first()->harga,
+                                'stok' => $group->sum('stok'),
+                            ];
+                        })->values();
+                    break;
+
+                case 'laporan':
+                    $data = Obat::with('dataObat')
+                        ->where(function ($query) use ($today) {
+                            $query->whereNull('expired')
+                                ->orWhereDate('expired', '>=', $today);
+                        })
+                        ->get()
+                        ->groupBy(fn($item) => $item->dataObat->nama . '-' . $item->harga)
+                        ->map(function ($group) {
+                            return [
+                                'nama' => $group->first()->dataObat->nama,
+                                'kategori' => $group->first()->dataObat->kategori ?? '-',
+                                'jenis' => $group->first()->dataObat->jenis ?? '-',
+                                'harga' => $group->first()->harga,
+                                'stok' => $group->sum('stok'),
+                                'expired_terdekat' => $group->min('expired'),
+                            ];
+                        })->values();
+                    break;
+
+                default:
+                    abort(404);
+            }
+
+            $pdf = Pdf::loadView('report.obat.pdf', [
+                'data' => $data,
+                'jenis' => $jenis,
+                'tanggal' => now()
+            ])->setPaper('a4', 'portrait');
+
+            return $pdf->stream("laporan_obat_{$jenis}_" . now()->format('Ymd_His') . ".pdf");
+        }
+        // end obat
     // end::report
 }

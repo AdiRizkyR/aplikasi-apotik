@@ -69,55 +69,34 @@
 <body>
 
     <div class="kop-surat">
-        <h2>E-Apotik</h2>
-        <p>Jl. Dummy Alamat No.123, Kecamatan Contoh, Kota Fiktif</p>
-        <p>Provinsi Sumatera Barat</p>
+        <h2><strong>APOTEK ANTOKAN</strong></h2>
+        <p><b>JL.</b> UJUNG GURUN, PADANG BARAT, KOTA PADANG</p>
+        <p><b>SUMATERA BARAT</b></p>
     </div>
 
     <div class="garis"></div>
 
     @php
-        $labelJenis = str_replace('_', ' ', strtolower($jenis));
-        $labelJenis = rtrim($labelJenis, 's'); // hapus 's' di akhir
+        $labelJenis = ucfirst(rtrim(strtolower($jenis), 's'));
     @endphp
 
     <div class="judul-laporan">
-        <h3>Laporan Data {{ ucfirst($labelJenis) }}</h3>
-        <p>Periode: {{ \Carbon\Carbon::parse($start)->format('d-m-Y') }} s/d
-            {{ \Carbon\Carbon::parse($end)->format('d-m-Y') }}</p>
+        <h3>Laporan Data {{ $labelJenis }}</h3>
     </div>
 
     @if ($data->isEmpty())
-        <p style="text-align:center;">
-            @if ($start && $end)
-                <em>Tidak ada data dari tanggal {{ \Carbon\Carbon::parse($start)->format('d-m-Y') }} sampai
-                    {{ \Carbon\Carbon::parse($end)->format('d-m-Y') }}</em>
-            @else
-                <em>Belum ada data dari tabel {{ $labelJenis }}</em>
-            @endif
-        </p>
+        <p style="text-align:center;"><em>Data {{ $labelJenis }} tidak tersedia</em></p>
     @else
         <table>
             <thead>
                 <tr>
                     <th>NO</th>
                     @foreach ($data->first()->getAttributes() as $col => $val)
-                        @continue(in_array($col, ['created_at', 'updated_at', 'remember_token']))
+                        @continue($col === 'remember_token')
+                        @continue($jenis !== 'users' && in_array($col, ['password']))
+                        @continue(in_array($col, ['created_at', 'updated_at']))
 
-                        @php
-                            // Ganti id menjadi "ID [TABEL]"
-                            if ($col === 'id') {
-                                $colLabel = 'ID ' . strtoupper($labelJenis);
-                            }
-                            // Ganti relasi user_id, pelanggan_id, supplier_id ke nama mereka
-                            elseif (in_array($col, ['user_id', 'pelanggan_id', 'supplier_id'])) {
-                                $colLabel = 'NAMA ' . strtoupper(str_replace('_id', '', $col));
-                            } else {
-                                $colLabel = strtoupper(str_replace('_', ' ', $col));
-                            }
-                        @endphp
-
-                        <th>{{ $colLabel }}</th>
+                        <th>{{ strtoupper(str_replace('_', ' ', $col)) }}</th>
                     @endforeach
                 </tr>
             </thead>
@@ -126,18 +105,9 @@
                     <tr>
                         <td>{{ $index + 1 }}</td>
                         @foreach ($row->getAttributes() as $col => $val)
-                            @continue(in_array($col, ['created_at', 'updated_at', 'remember_token']))
-
-                            @php
-                                // Ganti relasi id menjadi nama
-                                if ($col === 'user_id') {
-                                    $val = optional($row->user)->name;
-                                } elseif ($col === 'pelanggan_id') {
-                                    $val = optional($row->pelanggan)->nama;
-                                } elseif ($col === 'supplier_id') {
-                                    $val = optional($row->supplier)->nama;
-                                }
-                            @endphp
+                            @continue($col === 'remember_token')
+                            @continue($jenis !== 'users' && in_array($col, ['password']))
+                            @continue(in_array($col, ['created_at', 'updated_at']))
 
                             <td>{{ $val }}</td>
                         @endforeach

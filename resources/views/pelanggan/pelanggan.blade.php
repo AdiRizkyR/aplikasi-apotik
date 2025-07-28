@@ -31,22 +31,6 @@
                         <th>AKSI</th>
                     </tr>
                 </thead>
-                {{--  <tbody class="text-center">
-                    <tr>
-                        <td>1</td>
-                        <td>Adi Rizky Ramadhan</td>
-                        <td>Padang</td>
-                        <td>085271654598</td>
-                        <td>09-12-2001</td>
-                        <td class="text-center">
-                            <div class="d-flex justify-content-center">
-                                <button type="button" class="btn bg-gradient-primary btn-sm mr-1">Lihat</button>
-                                <button type="button" class="btn bg-gradient-warning btn-sm mr-1">Edit</button>
-                                <button type="button" class="btn bg-gradient-danger btn-sm">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>  --}}
                 <tbody class="text-center">
                     @forelse ($pelanggans as $index => $pelanggan)
                         <tr>
@@ -57,7 +41,6 @@
                             <td>{{ \Carbon\Carbon::parse($pelanggan->created_at)->format('d-m-Y') }}</td>
                             <td class="text-center">
                                 <div class="d-flex justify-content-center">
-                                    {{--  <button type="button" class="btn bg-gradient-warning btn-sm mr-1">Edit</button>  --}}
                                     <button type="button" class="btn bg-gradient-warning btn-sm mr-1 btn-edit"
                                         data-id="{{ $pelanggan->id }}" data-nama="{{ $pelanggan->nama }}"
                                         data-alamat="{{ $pelanggan->alamat }}" data-nohp="{{ $pelanggan->nohp }}"

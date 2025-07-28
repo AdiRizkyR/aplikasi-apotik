@@ -112,14 +112,31 @@ Route::get('/', function () {
 // end route obat masuk
 
 // start route report
-    Route::get('/report', [viewController::class, 'report'])->name('report')->middleware('auth');
-    Route::get('/laporan/export', [viewController::class, 'exportPDF'])->name('report.export.pdf');
+    // Route::get('/report', [viewController::class, 'report'])->name('report')->middleware('auth');
+    // Route::get('/laporan/export', [viewController::class, 'exportPDF'])->name('report.export.pdf');
 
+    // user
     Route::get('/reportUser', [viewController::class, 'reportUser'])->name('reportUser')->middleware('auth');
-    Route::get('/reportSupplier', [viewController::class, 'reportSupplier'])->name('reportSupplier')->middleware('auth');
-    Route::get('/reportPelanggan', [viewController::class, 'reportPelanggan'])->name('reportPelanggan')->middleware('auth');
+    Route::get('/reportUser/print', [viewController::class, 'printReportUser'])->name('reportUser.print')->middleware('auth');
+    // end user
+
+    // pemesanan
     Route::get('/reportPemesanan', [viewController::class, 'reportPemesanan'])->name('reportPemesanan')->middleware('auth');
+    Route::get('/reportPemesanan/print', [viewController::class, 'reportPemesananPrint'])->name('reportPemesanan.print');
+    // end pemesanan
+
+    // obat masuk
     Route::get('/reportObatMasuk', [viewController::class, 'reportObatMasuk'])->name('reportObatMasuk')->middleware('auth');
+    Route::get('/reportObatMasuk/print', [viewController::class, 'reportObatMasukPrint'])->name('reportObatMasuk.print');
+    // end obat masuk
+
+    // penjualan
     Route::get('/reportPenjualan', [viewController::class, 'reportPenjualan'])->name('reportPenjualan')->middleware('auth');
+    Route::get('/reportPenjualan/print', [viewController::class, 'reportPenjualanPrint'])->name('reportPenjualan.print')->middleware('auth');
+    // end penjualan
+
+    // obat
     Route::get('/reportObat', [viewController::class, 'reportObat'])->name('reportObat')->middleware('auth');
+    Route::get('/reportObat/print', [viewController::class, 'printReportObat'])->name('reportObat.print')->middleware('auth');
+    // end obat
 // end route report

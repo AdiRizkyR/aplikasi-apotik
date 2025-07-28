@@ -1,7 +1,7 @@
     <!-- Sidebar -->
     <div class="sidebar">
         <!-- Sidebar Menu -->
-        <nav class="mt-2">
+        <nav class="mt-2 mb-50">
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
                 <li class="nav-header">MASTERS</li>
                 <li class="nav-item">
@@ -82,38 +82,20 @@
                 </li>
 
                 <li class="nav-header">REPORT</li>
-                <li class="nav-item">
+                {{--  <li class="nav-item">
                     <a href="{{ route('report') }}" class="nav-link">
                         <i class="nav-icon fas fa-file-invoice"></i>
                         <p>
                             Pelaporan
                         </p>
                     </a>
-                </li>
+                </li>  --}}
 
                 <li class="nav-item">
                     <a href="{{ route('reportUser') }}" class="nav-link">
                         <i class="nav-icon fas fa-file-invoice"></i>
                         <p>
                             Laporan User
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('reportSupplier') }}" class="nav-link">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                        <p>
-                            Laporan Supplier
-                        </p>
-                    </a>
-                </li>
-
-                <li class="nav-item">
-                    <a href="{{ route('reportPelanggan') }}" class="nav-link">
-                        <i class="nav-icon fas fa-file-invoice"></i>
-                        <p>
-                            Laporan Pelanggan
                         </p>
                     </a>
                 </li>
@@ -131,7 +113,16 @@
                     <a href="{{ route('reportObatMasuk') }}" class="nav-link">
                         <i class="nav-icon fas fa-file-invoice"></i>
                         <p>
-                            Pelaporan Obat Masuk
+                            Laporan Obat Masuk
+                        </p>
+                    </a>
+                </li>
+
+                <li class="nav-item">
+                    <a href="{{ route('reportPenjualan') }}" class="nav-link">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <p>
+                            Laporan Penjualan
                         </p>
                     </a>
                 </li>
@@ -144,9 +135,9 @@
                         </p>
                     </a>
                 </li>
-
             </ul>
         </nav>
+        <br><br><br>
         <!-- /.sidebar-menu -->
     </div>
     <!-- /.sidebar -->

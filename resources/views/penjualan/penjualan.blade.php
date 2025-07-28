@@ -127,7 +127,6 @@
             <!-- Modal Tambah Penjualan -->
             <div class="modal fade" id="modal-xl" tabindex="-1">
                 <div class="modal-dialog modal-xl">
-                    {{--  <form id="form-penjualan" method="POST" action="#">  --}}
                     <form id="form-penjualan" method="POST" action="{{ route('penjualans.store') }}">
                         @csrf
                         <div class="modal-content">
