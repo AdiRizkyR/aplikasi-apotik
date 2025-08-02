@@ -12,6 +12,7 @@ class DetailObatMasuk extends Model
     protected $fillable = [
         'obat_masuk_id',
         'data_obat_id',
+        'no_batch',
         'jumlah_beli',
         'harga_beli',
         'harga_jual',

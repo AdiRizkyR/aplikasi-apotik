@@ -166,9 +166,9 @@
                         <th>NAMA OBAT</th>
                         <th>JENIS</th>
                         <th>KATEGORI</th>
-                        <th>HARGA BELI</th>
+                        {{--  <th>HARGA BELI</th>  --}}
                         <th>JUMLAH</th>
-                        <th>SUBTOTAL</th>
+                        {{--  <th>SUBTOTAL</th>  --}}
                     </tr>
                 </thead>
                 <tbody>
@@ -196,9 +196,9 @@
                                     <td>{{ $detail->dataObat->nama ?? '-' }}</td>
                                     <td>{{ $detail->dataObat->jenis ?? '-' }}</td>
                                     <td>{{ $detail->dataObat->kategori ?? '-' }}</td>
-                                    <td>Rp {{ number_format($detail->harga_beli, 0, ',', '.') }}</td>
+                                    {{--  <td>Rp {{ number_format($detail->harga_beli, 0, ',', '.') }}</td>  --}}
                                     <td>{{ $detail->jumlah_beli }}</td>
-                                    <td>Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
+                                    {{--  <td>Rp {{ number_format($subtotal, 0, ',', '.') }}</td>  --}}
                                 </tr>
                             @endforeach
                         @else
@@ -214,10 +214,10 @@
                     @endforeach
 
                     <!-- TOTAL KESELURUHAN -->
-                    <tr>
+                    {{--  <tr>
                         <td colspan="10" style="text-align:right;"><strong>Total Keseluruhan</strong></td>
                         <td><strong>Rp {{ number_format($totalKeseluruhan, 0, ',', '.') }}</strong></td>
-                    </tr>
+                    </tr>  --}}
                 </tbody>
             </table>
         @endif

@@ -69,6 +69,7 @@
                     <th>Nama Obat</th>
                     <th>Jenis</th>
                     <th>Kategori</th>
+                    <th>Nomor Batch</th>
                     <th>Harga</th>
                     <th>Stok</th>
                     @if ($jenis === 'laporan')
@@ -85,6 +86,7 @@
                         <td>{{ $item['nama'] ?? $item->dataObat->nama }}</td>
                         <td>{{ $item['jenis'] ?? ($item->dataObat->jenis ?? '-') }}</td>
                         <td>{{ $item['kategori'] ?? ($item->dataObat->kategori ?? '-') }}</td>
+                        <td>{{ $item['no_batch'] ?? $item->no_batch }}</td>
                         <td>Rp {{ number_format($item['harga'] ?? $item->harga, 0, ',', '.') }}</td>
                         <td>{{ $item['stok'] ?? $item->stok }}</td>
                         @if ($jenis === 'laporan')

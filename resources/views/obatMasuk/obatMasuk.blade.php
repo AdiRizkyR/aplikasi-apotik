@@ -110,6 +110,7 @@
                                             <th>Nama Obat</th>
                                             <th>Jenis</th>
                                             <th>Kategori</th>
+                                            <th>No. Batch</th>
                                             <th>Jumlah</th>
                                             <th>Harga Beli</th>
                                             <th>Harga Jual</th>
@@ -122,6 +123,7 @@
                                                 <td>{{ $detail->dataObat->nama ?? '-' }}</td>
                                                 <td>{{ $detail->dataObat->jenis ?? '-' }}</td>
                                                 <td>{{ $detail->dataObat->kategori ?? '-' }}</td>
+                                                <td>{{ $detail->no_batch ?? '-' }}</td>
                                                 <td>{{ $detail->jumlah_beli }}</td>
                                                 <td>Rp{{ number_format($detail->harga_beli, 2, ',', '.') }}</td>
                                                 <td>Rp{{ number_format($detail->harga_jual, 2, ',', '.') }}</td>
@@ -184,46 +186,67 @@
                             <hr>
                             <h5>Detail Obat</h5>
 
-                            {{-- Input Tambah --}}
+                            <!-- Input Tambah -->
                             <div class="row mb-3">
-                                <div class="col-md-4">
-                                    <label>Nama Obat</label>
-                                    <select class="form-control obat-select" data-target="{{ $item->id }}">
-                                        <option value="">-- Pilih Obat --</option>
-                                        @foreach ($obats as $obat)
-                                            <option value="{{ $obat->id }}" data-nama="{{ $obat->nama }}">
-                                                {{ $obat->nama }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                <div class="col-md-6">
+                                    <div>
+                                        <label>Nama Obat</label>
+                                        <select class="form-control obat-select selectpicker my-select"
+                                            data-target="{{ $item->id }}" data-live-search="true">
+                                            <option value="">-- Pilih Obat --</option>
+                                            @foreach ($obats as $obat)
+                                                <option value="{{ $obat->id }}" data-nama="{{ $obat->nama }}">
+                                                    {{ $obat->nama }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label>Nomor Batch</label>
+                                        <input type="text" class="form-control nomor_batch"
+                                            data-target="{{ $item->id }}">
+                                    </div>
+                                    <div>
+                                        <label>Jumlah Beli</label>
+                                        <input type="number" class="form-control jumlah-beli"
+                                            data-target="{{ $item->id }}" min="1">
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <label>Jumlah Beli</label>
-                                    <input type="number" class="form-control jumlah-beli"
-                                        data-target="{{ $item->id }}">
+
+                                <div class="col-md-6">
+                                    <div>
+                                        <label>Harga Beli</label>
+                                        <input type="number" class="form-control harga-beli"
+                                            data-target="{{ $item->id }}" min="0" step="0.01">
+                                    </div>
+                                    <div>
+                                        <label>Harga Jual</label>
+                                        <input type="number" class="form-control harga-jual"
+                                            data-target="{{ $item->id }}" min="0" step="0.01">
+                                    </div>
+                                    <div>
+                                        <label>Tanggal Expired</label>
+                                        <input type="date" class="form-control expired-date"
+                                            data-target="{{ $item->id }}">
+                                    </div>
                                 </div>
-                                <div class="col-md-2">
-                                    <label>Harga Beli</label>
-                                    <input type="number" class="form-control harga-beli"
-                                        data-target="{{ $item->id }}">
-                                </div>
-                                <div class="col-md-2">
-                                    <label>Harga Jual</label>
-                                    <input type="number" class="form-control harga-jual"
-                                        data-target="{{ $item->id }}">
-                                </div>
-                                <div class="col-md-2 d-flex align-items-end">
+                            </div>
+                            <div class="row mb-3">
+                                <div class="col-md-12 d-flex align-items-end">
                                     <button type="button" class="btn btn-success w-100 btn-tambah-detail"
-                                        data-target="{{ $item->id }}">Tambah</button>
+                                        data-target="{{ $item->id }}">
+                                        Tambah Detail
+                                    </button>
                                 </div>
                             </div>
 
-                            {{-- Tabel Detail --}}
+                            <!-- Tabel Detail -->
                             <div class="table-responsive">
                                 <table class="table table-bordered text-center">
-                                    <thead>
+                                    <thead class="thead-light">
                                         <tr>
                                             <th>Nama Obat</th>
+                                            <th>No. Batch</th>
                                             <th>Jumlah</th>
                                             <th>Harga Beli</th>
                                             <th>Harga Jual</th>
@@ -237,7 +260,7 @@
                                             @php
                                                 $subtotal = $detail->jumlah_beli * $detail->harga_beli;
                                             @endphp
-                                            <tr>
+                                            <tr data-row-id="{{ $i }}">
                                                 <td>
                                                     {{ $detail->dataObat->nama }}
                                                     <input type="hidden" name="detail[{{ $i }}][id]"
@@ -247,25 +270,47 @@
                                                     <input type="hidden" name="detail[{{ $i }}][nama]"
                                                         value="{{ $detail->dataObat->nama }}">
                                                 </td>
-                                                <td><input type="number" name="detail[{{ $i }}][jumlah_beli]"
-                                                        class="form-control" value="{{ $detail->jumlah_beli }}"></td>
-                                                <td><input type="number" name="detail[{{ $i }}][harga_beli]"
-                                                        class="form-control" value="{{ $detail->harga_beli }}"></td>
-                                                <td><input type="number" name="detail[{{ $i }}][harga_jual]"
-                                                        class="form-control" value="{{ $detail->harga_jual }}"></td>
-                                                <td><input type="date" name="detail[{{ $i }}][expired]"
-                                                        class="form-control" value="{{ $detail->expired }}"></td>
-                                                <td class="subtotal">Rp{{ number_format($subtotal, 2, ',', '.') }}</td>
-                                                {{--  <td>
-                                                    <button type="button" class="btn btn-danger btn-sm"
-                                                        onclick="this.closest('tr').remove(); updateTotalHargaEdit({{ $item->id }})">Hapus</button>
-                                                </td>  --}}
+                                                <td>
+                                                    <input type="text" name="detail[{{ $i }}][no_batch]"
+                                                        class="form-control" value="{{ $detail->no_batch }}"
+                                                        placeholder="Batch">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="detail[{{ $i }}][jumlah_beli]"
+                                                        class="form-control quantity-input"
+                                                        value="{{ $detail->jumlah_beli }}" min="1"
+                                                        data-target="{{ $item->id }}"
+                                                        data-row="{{ $i }}">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="detail[{{ $i }}][harga_beli]"
+                                                        class="form-control price-input"
+                                                        value="{{ $detail->harga_beli }}" min="0" step="0.01"
+                                                        data-target="{{ $item->id }}"
+                                                        data-row="{{ $i }}">
+                                                </td>
+                                                <td>
+                                                    <input type="number" name="detail[{{ $i }}][harga_jual]"
+                                                        class="form-control" value="{{ $detail->harga_jual }}"
+                                                        min="0" step="0.01">
+                                                </td>
+                                                <td>
+                                                    <input type="date" name="detail[{{ $i }}][expired]"
+                                                        class="form-control" value="{{ $detail->expired }}">
+                                                </td>
+                                                <td class="subtotal-cell" data-row="{{ $i }}">
+                                                    <span
+                                                        class="subtotal-display">Rp{{ number_format($subtotal, 2, ',', '.') }}</span>
+                                                    <input type="hidden" name="detail[{{ $i }}][subtotal]"
+                                                        class="subtotal-value" value="{{ $subtotal }}">
+                                                </td>
                                                 <td>
                                                     <button type="button"
                                                         class="btn btn-danger btn-sm btn-delete-detail-db"
                                                         data-detail-id="{{ $detail->id }}"
                                                         data-obat-id="{{ $detail->dataObat->id }}"
-                                                        data-obat-masuk-id="{{ $item->id }}">
+                                                        data-obat-masuk-id="{{ $item->id }}"
+                                                        data-row="{{ $i }}">
                                                         Hapus
                                                     </button>
                                                 </td>
@@ -274,7 +319,6 @@
                                     </tbody>
                                 </table>
                             </div>
-
                         </div>
 
                         <div class="modal-footer">
@@ -286,119 +330,188 @@
             </div>
         </div>
 
+
         <!-- SweetAlert2 CDN (jika belum ada) -->
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
 
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 // Inisialisasi total harga setiap modal edit
                 @foreach ($obatMasuks as $item)
                     updateTotalHargaEdit({{ $item->id }});
+                    initializeDynamicCalculation({{ $item->id }});
                 @endforeach
 
-                // Tambah baris baru
+                // Fungsi untuk menginisialisasi perhitungan dinamis
+                function initializeDynamicCalculation(target) {
+                    // Event listener untuk perubahan quantity dan price
+                    document.addEventListener('input', function(e) {
+                        if (e.target.classList.contains('quantity-input') || e.target.classList.contains(
+                                'price-input')) {
+                            const targetId = e.target.dataset.target;
+                            const rowId = e.target.dataset.row;
+
+                            if (targetId == target) {
+                                updateRowSubtotal(targetId, rowId);
+                                updateTotalHargaEdit(targetId);
+                            }
+                        }
+                    });
+                }
+
+                // Fungsi untuk update subtotal per baris
+                function updateRowSubtotal(target, rowId) {
+                    const row = document.querySelector(`tr[data-row-id="${rowId}"]`);
+                    if (!row) return;
+
+                    const quantityInput = row.querySelector(`[name*="[jumlah_beli]"]`);
+                    const priceInput = row.querySelector(`[name*="[harga_beli]"]`);
+                    const subtotalCell = row.querySelector('.subtotal-cell');
+                    const subtotalValue = row.querySelector('.subtotal-value');
+                    const subtotalDisplay = row.querySelector('.subtotal-display');
+
+                    if (quantityInput && priceInput && subtotalCell) {
+                        const quantity = parseFloat(quantityInput.value) || 0;
+                        const price = parseFloat(priceInput.value) || 0;
+                        const subtotal = quantity * price;
+
+                        // Update display
+                        subtotalDisplay.textContent =
+                            `Rp${subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+                        // Update hidden value
+                        if (subtotalValue) {
+                            subtotalValue.value = subtotal;
+                        }
+                    }
+                }
+
+                // Tambah baris baru (dimodifikasi)
                 document.querySelectorAll('.btn-tambah-detail').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const target = this.dataset.target;
                         const select = document.querySelector(`.obat-select[data-target="${target}"]`);
                         const nama = select.options[select.selectedIndex].text;
                         const obatId = select.value.trim();
+                        const noBatch = document.querySelector(`.nomor_batch[data-target="${target}"]`)
+                            .value.trim();
                         const jumlah = document.querySelector(`.jumlah-beli[data-target="${target}"]`)
                             .value.trim();
                         const hargaBeli = document.querySelector(`.harga-beli[data-target="${target}"]`)
                             .value.trim();
                         const hargaJual = document.querySelector(`.harga-jual[data-target="${target}"]`)
                             .value.trim();
+                        const expired = document.querySelector(`.expired-date[data-target="${target}"]`)
+                            .value.trim();
                         const tbody = document.getElementById(`edit-detail-body-${target}`);
                         const index = tbody.querySelectorAll('tr').length;
 
-                        if (!obatId || !jumlah || !hargaBeli || !hargaJual) {
+                        // Validasi input
+                        if (!obatId || !jumlah || !hargaBeli || !hargaJual || !expired) {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Lengkapi Data!',
-                                text: 'Pastikan semua inputan (obat, jumlah, harga beli, harga jual) sudah diisi.'
+                                text: 'Pastikan semua inputan sudah diisi lengkap.'
                             });
                             return;
                         }
 
-                        const subtotal = jumlah * hargaBeli;
+                        const subtotal = parseFloat(jumlah) * parseFloat(hargaBeli);
 
                         const row = `
-                    <tr>
-                        <td>
-                            ${nama}
-                            <input type="hidden" name="detail[${index}][obat_id]" value="${obatId}">
-                            <input type="hidden" name="detail[${index}][nama]" value="${nama}">
-                        </td>
-                        <td><input type="number" name="detail[${index}][jumlah_beli]" class="form-control" value="${jumlah}" required></td>
-                        <td><input type="number" name="detail[${index}][harga_beli]" class="form-control" value="${hargaBeli}" required></td>
-                        <td><input type="number" name="detail[${index}][harga_jual]" class="form-control" value="${hargaJual}" required></td>
-                        <td><input type="date" name="detail[${index}][expired]" class="form-control" required></td>
-                        <td class="subtotal">Rp${parseInt(subtotal).toLocaleString('id-ID')}</td>
-                        <td><button type="button" class="btn btn-danger btn-sm" onclick="this.closest('tr').remove(); updateTotalHargaEdit(${target})">Hapus</button></td>
-                    </tr>
-                `;
+                            <tr data-row-id="${index}">
+                                <td>
+                                    ${nama}
+                                    <input type="hidden" name="detail[${index}][obat_id]" value="${obatId}">
+                                    <input type="hidden" name="detail[${index}][nama]" value="${nama}">
+                                </td>
+                                <td>
+                                    <input type="text" name="detail[${index}][no_batch]" class="form-control" value="${noBatch}" placeholder="Batch">
+                                </td>
+                                <td>
+                                    <input type="number" name="detail[${index}][jumlah_beli]"
+                                        class="form-control quantity-input"
+                                        value="${jumlah}"
+                                        min="1"
+                                        data-target="${target}"
+                                        data-row="${index}" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="detail[${index}][harga_beli]"
+                                        class="form-control price-input"
+                                        value="${hargaBeli}"
+                                        min="0"
+                                        step="0.01"
+                                        data-target="${target}"
+                                        data-row="${index}" required>
+                                </td>
+                                <td>
+                                    <input type="number" name="detail[${index}][harga_jual]"
+                                        class="form-control"
+                                        value="${hargaJual}"
+                                        min="0"
+                                        step="0.01" required>
+                                </td>
+                                <td>
+                                    <input type="date" name="detail[${index}][expired]"
+                                        class="form-control"
+                                        value="${expired}" required>
+                                </td>
+                                <td class="subtotal-cell" data-row="${index}">
+                                    <span class="subtotal-display">Rp${subtotal.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}</span>
+                                    <input type="hidden" name="detail[${index}][subtotal]"
+                                        class="subtotal-value"
+                                        value="${subtotal}">
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger btn-sm btn-delete-row"
+                                            data-target="${target}"
+                                            data-row="${index}">
+                                        Hapus
+                                    </button>
+                                </td>
+                            </tr>
+                        `;
+
                         tbody.insertAdjacentHTML('beforeend', row);
 
                         // Reset input
                         select.selectedIndex = 0;
+                        document.querySelector(`.nomor_batch[data-target="${target}"]`).value = '';
                         document.querySelector(`.jumlah-beli[data-target="${target}"]`).value = '';
                         document.querySelector(`.harga-beli[data-target="${target}"]`).value = '';
                         document.querySelector(`.harga-jual[data-target="${target}"]`).value = '';
+                        document.querySelector(`.expired-date[data-target="${target}"]`).value = '';
 
+                        // Update total
                         updateTotalHargaEdit(target);
                     });
                 });
 
+                // Event listener untuk hapus baris baru
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('btn-delete-row')) {
+                        const target = e.target.dataset.target;
+                        e.target.closest('tr').remove();
+                        updateTotalHargaEdit(target);
+                    }
+                });
+
                 // Validasi sebelum submit
-                document.querySelectorAll('.form-edit-obat').forEach(form => {
+                document.querySelectorAll('[id^="form-edit-"]').forEach(form => {
                     form.addEventListener('submit', function(e) {
                         e.preventDefault();
 
-                        const formId = this.dataset.id;
-                        const tanggalTerima = document.getElementById(`tanggal_terima_${formId}`).value
-                            .trim();
-                        const rows = document.querySelectorAll(`#edit-detail-body-${formId} tr`);
-
-                        if (!tanggalTerima) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Tanggal Terima Kosong!',
-                                text: 'Silakan isi tanggal terima terlebih dahulu.'
-                            });
-                            return;
-                        }
+                        const formData = new FormData(this);
+                        const rows = this.querySelectorAll('tbody tr');
 
                         if (rows.length === 0) {
                             Swal.fire({
                                 icon: 'warning',
                                 title: 'Detail Obat Kosong!',
                                 text: 'Silakan tambahkan minimal satu data obat.'
-                            });
-                            return;
-                        }
-
-                        let isValid = true;
-                        rows.forEach(row => {
-                            const jumlah = row.querySelector('[name*="[jumlah_beli]"]').value
-                                .trim();
-                            const beli = row.querySelector('[name*="[harga_beli]"]').value
-                                .trim();
-                            const jual = row.querySelector('[name*="[harga_jual]"]').value
-                                .trim();
-                            const expired = row.querySelector('[name*="[expired]"]').value
-                                .trim();
-
-                            if (!jumlah || !beli || !jual || !expired) {
-                                isValid = false;
-                            }
-                        });
-
-                        if (!isValid) {
-                            Swal.fire({
-                                icon: 'warning',
-                                title: 'Isi Semua Kolom!',
-                                text: 'Pastikan semua inputan di dalam tabel detail telah terisi lengkap.'
                             });
                             return;
                         }
@@ -412,13 +525,14 @@
                             cancelButtonText: 'Batal'
                         }).then((result) => {
                             if (result.isConfirmed) {
-                                form.submit();
+                                this.submit();
                             }
                         });
                     });
                 });
             });
 
+            // Fungsi update total harga (dimodifikasi)
             function updateTotalHargaEdit(target) {
                 const rows = document.querySelectorAll(`#edit-detail-body-${target} tr`);
                 let total = 0;
@@ -426,10 +540,22 @@
                 rows.forEach(row => {
                     const jumlah = row.querySelector('[name*="[jumlah_beli]"]')?.value || 0;
                     const harga = row.querySelector('[name*="[harga_beli]"]')?.value || 0;
-                    total += parseInt(jumlah) * parseFloat(harga);
+                    const subtotal = parseFloat(jumlah) * parseFloat(harga);
+                    total += subtotal;
                 });
 
-                document.getElementById(`total_harga_edit_${target}`).value = total.toFixed(2);
+                // Update input total harga
+                const totalInput = document.getElementById(`total_harga_edit_${target}`);
+                if (totalInput) {
+                    totalInput.value = total.toFixed(2);
+                }
+
+                // Update display total
+                const totalDisplay = document.getElementById(`total-display-${target}`);
+                if (totalDisplay) {
+                    totalDisplay.textContent =
+                        `Rp${total.toLocaleString('id-ID', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+                }
             }
         </script>
 
@@ -442,6 +568,7 @@
 
                     Swal.fire({
                         title: 'Yakin ingin menghapus detail ini?',
+                        text: 'anda tidak dapat mengembalikan data ini setelah dihapus',
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonText: 'Ya, Hapus!',

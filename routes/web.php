@@ -95,6 +95,7 @@ Route::get('/', function () {
 
 // start route pemesanan
     Route::get('/pemesanan', [viewController::class, 'pemesanan'])->name('pemesanan')->middleware('auth');
+    Route::get('/pemesanan/cetak/{id}', [PemesananController::class, 'cetak'])->name('pemesanan.cetak');
 
     // crud
         Route::post('/pemesanans', [PemesananController::class, 'store'])->name('pemesanans.store');
@@ -106,6 +107,7 @@ Route::get('/', function () {
     Route::get('/obatMasuk', [viewController::class, 'obatMasuk'])->name('obatMasuk')->middleware('auth');
 
     // crud
+        // Route::put('/obat-masuk/{id}', [ObatController::class, 'update'])->name('obatMasuk.update');
         Route::put('/obat-masuk/{id}', [ObatController::class, 'update'])->name('obatMasuk.update');
         Route::delete('/obat/detail/{id}', [ObatController::class, 'deleteDetail'])->name('obat.detail.delete');
     // end crud

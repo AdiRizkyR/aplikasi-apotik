@@ -12,6 +12,7 @@ class Obat extends Model
     protected $fillable = [
         'data_obat_id',
         'obat_masuk_id',
+        'no_batch',
         'stok',
         'harga',
         'expired',

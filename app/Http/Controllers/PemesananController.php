@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 use App\Models\Pemesanan;
 use App\Models\DetailPemesanan;
@@ -19,6 +21,21 @@ class PemesananController extends Controller
     public function index()
     {
         //
+    }
+
+    public function cetak($id)
+    {
+        $pemesanan = \App\Models\Pemesanan::with(['user', 'supplier', 'detailPemesanans.dataObat'])->findOrFail($id);
+
+        $data = collect([$pemesanan]); // disesuaikan dengan struktur pdf.blade.php
+        $jenis = 'pemesanans';
+        $start = $pemesanan->tanggal_pesan;
+        $end = $pemesanan->tanggal_pesan;
+
+        $pdf = Pdf::loadView('pemesanan.pdf', compact('data', 'jenis', 'start', 'end'))
+                    ->setPaper('A4', 'portrait');
+
+        return $pdf->stream('pemesanan-' . $pemesanan->id . '.pdf'); // membuka di tab baru
     }
 
     /**

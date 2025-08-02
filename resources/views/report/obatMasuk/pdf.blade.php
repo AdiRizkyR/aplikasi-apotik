@@ -88,6 +88,7 @@
                     <th>Penanggung Jawab</th>
                     <th>Supplier</th>
                     <th>Nama Obat</th>
+                    <th>No. Batch</th>
                     <th>Jumlah</th>
                     <th>Harga Beli</th>
                     <th>Harga Jual</th>
@@ -109,6 +110,7 @@
                             <td>{{ $row->pemesanan->user->name ?? '-' }}</td>
                             <td>{{ $row->pemesanan->supplier->nama ?? '-' }}</td>
                             <td>{{ $detail->dataObat->nama ?? '-' }}</td>
+                            <td>{{ $detail->no_batch ?? '-' }}</td>
                             <td>{{ $detail->jumlah_beli }}</td>
                             <td>Rp {{ number_format($detail->harga_beli, 0, ',', '.') }}</td>
                             <td>Rp {{ number_format($detail->harga_jual ?? 0, 0, ',', '.') }}</td>
@@ -119,7 +121,7 @@
                 @endforeach
 
                 <tr>
-                    <td colspan="10" style="text-align: right;"><strong>Total Keseluruhan</strong></td>
+                    <td colspan="11" style="text-align: right;"><strong>Total Keseluruhan</strong></td>
                     <td><strong>Rp {{ number_format($totalKeseluruhan, 0, ',', '.') }}</strong></td>
                 </tr>
             </tbody>

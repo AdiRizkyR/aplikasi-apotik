@@ -32,11 +32,6 @@ class viewController extends Controller
     // end::auth
 
     // begin::dashboard
-    // public function dashboard()
-    // {
-    //     return view('layout.dashboard');
-    // }
-
     public function dashboard()
     {
         return view('layout.dashboard', [
@@ -102,6 +97,7 @@ class viewController extends Controller
                 if (!isset($groupedObats[$key])) {
                     $groupedObats[$key] = [
                         'nama' => $obat->dataObat->nama,
+                        'no_batch' => $obat->no_batch,
                         'stok' => $obat->stok,
                         'harga' => $obat->harga,
                         'expired' => $obat->expired,
@@ -466,6 +462,7 @@ class viewController extends Controller
                                 'nama' => $group->first()->dataObat->nama,
                                 'kategori' => $group->first()->dataObat->kategori ?? '-',
                                 'jenis' => $group->first()->dataObat->jenis ?? '-',
+                                'no_batch' => $group->first()->no_batch,
                                 'harga' => $group->first()->harga,
                                 'stok' => $group->sum('stok'),
                             ];
@@ -485,6 +482,7 @@ class viewController extends Controller
                                 'nama' => $group->first()->dataObat->nama,
                                 'kategori' => $group->first()->dataObat->kategori ?? '-',
                                 'jenis' => $group->first()->dataObat->jenis ?? '-',
+                                'no_batch' => $group->first()->no_batch,
                                 'harga' => $group->first()->harga,
                                 'stok' => $group->sum('stok'),
                                 'expired_terdekat' => $group->min('expired'),

@@ -63,6 +63,7 @@
                     <tr>
                         <th>NO</th>
                         <th>NAMA OBAT</th>
+                        <th>NOMOR BATCH</th>
                         <th>STOK</th>
                         <th>HARGA</th>
                         <th>EXPIRED</th>
@@ -74,6 +75,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item['nama'] }}</td>
+                            <td>{{ $item['no_batch'] }}</td>
                             <td>{{ $item['stok'] }}</td>
                             <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
                             <td>{{ \Carbon\Carbon::parse($item['expired'])->format('d-m-Y') }}</td>
@@ -112,6 +114,7 @@
                             <thead>
                                 <tr>
                                     <th>NO</th>
+                                    <th>NOMOR BATCH</th>
                                     <th>STOK</th>
                                     <th>HARGA</th>
                                     <th>EXPIRED</th>
@@ -146,6 +149,7 @@
                                     @endphp
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
+                                        <td>{{ $b->no_batch }}</td>
                                         <td>{{ $b->stok }}</td>
                                         <td>Rp{{ number_format($b->harga, 0, ',', '.') }}</td>
                                         <td>{{ $expired->format('d-m-Y') }}</td>

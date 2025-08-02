@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('obat_masuk_id')->constrained('obat_masuks')->onDelete('cascade'); // Foreign key ke tabel obat_masuks
             $table->foreignId('data_obat_id')->constrained('data_obats')->onDelete('cascade'); // Foreign key ke tabel data_obats
+            $table->string('no_batch')->nullable();
             $table->integer('jumlah_beli'); // Jumlah obat yang dibeli
             $table->decimal('harga_beli', 10, 2); // Harga beli obat
             $table->decimal('harga_jual', 10, 2)->nullable(); // Harga jual obat, bisa null

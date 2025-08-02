@@ -141,7 +141,8 @@
 
                                 <div class="form-group">
                                     <label>Pelanggan</label>
-                                    <select name="pelanggan_id" class="form-control" required>
+                                    <select name="pelanggan_id" class="form-control selectpicker my-select"
+                                        data-live-search="true" required>
                                         <option value="">-- Pilih Pelanggan --</option>
                                         @foreach ($pelanggans as $pelanggan)
                                             <option value="{{ $pelanggan->id }}">{{ $pelanggan->nama }}</option>
@@ -154,10 +155,12 @@
                                     <input type="date" name="tanggal_pesan" class="form-control" required>
                                 </div>
 
-                                <div class="form-group">
+                                {{--  <div class="form-group">
                                     <label>Tanggal Terima</label>
                                     <input type="date" name="tanggal_terima" class="form-control" required>
-                                </div>
+                                </div>  --}}
+                                <input type="hidden" name="tanggal_terima"
+                                    value="{{ \Carbon\Carbon::now()->toDateString() }}">
 
                                 <div class="form-group">
                                     <label>Total Harga</label>
@@ -171,7 +174,8 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label>Nama Obat | Stok | Harga</label>
-                                        <select id="obat_id" class="form-control">
+                                        <select id="obat_id" class="form-control selectpicker my-select"
+                                            data-live-search="true">
                                             <option value="">-- Pilih Obat --</option>
                                             @foreach ($obats as $obat)
                                                 <option value="{{ $obat['id'] }}" data-harga="{{ $obat['harga'] }}"
