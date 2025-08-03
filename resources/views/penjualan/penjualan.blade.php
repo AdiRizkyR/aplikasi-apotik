@@ -212,6 +212,7 @@
                                         </table>
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="modal-footer">
@@ -274,6 +275,27 @@
                     select.value = '';
                 });
 
+                /*
+                                                                                        function renderTabel() {
+                                                                                            const tbody = document.getElementById('tabel-detail-obat');
+                                                                                            tbody.innerHTML = '';
+
+                                                                                            detailPenjualan.forEach((item, index) => {
+                                                                                                tbody.innerHTML += `
+                <tr>
+                    <td>${item.nama}</td>
+                    <td>${item.jumlah}</td>
+                    <td>Rp${item.harga.toLocaleString('id-ID')}</td>
+                    <td>Rp${item.subtotal.toLocaleString('id-ID')}</td>
+                    <td>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="hapusItem(${index})">Hapus</button>
+                    </td>
+                </tr>
+            `;
+                                                                                            });
+                                                                                        }
+                                                                                        */
+
                 function renderTabel() {
                     const tbody = document.getElementById('tabel-detail-obat');
                     tbody.innerHTML = '';
@@ -291,12 +313,46 @@
                             </tr>
                         `;
                     });
+
+                    // Tambahkan baris total subtotal di bawah item
+                    const totalSubtotal = detailPenjualan.reduce((sum, item) => sum + item.subtotal, 0);
+
+                    tbody.innerHTML += `
+                        <tr class="table-secondary font-weight-bold">
+                            <td colspan="3" class="text-end"><strong>Total</strong></td>
+                            <td><strong>Rp${totalSubtotal.toLocaleString('id-ID')}</strong></td>
+                            <td></td>
+                        </tr>
+                    `;
                 }
 
+
+
                 function hapusItem(index) {
-                    detailPenjualan.splice(index, 1);
-                    renderTabel();
-                    hitungTotal();
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data ini akan dihapus dari daftar!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            detailPenjualan.splice(index, 1);
+                            renderTabel();
+                            hitungTotal();
+
+                            Swal.fire({
+                                icon: 'success',
+                                title: 'Berhasil!',
+                                text: 'Item telah dihapus.',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
                 }
 
                 function hitungTotal() {

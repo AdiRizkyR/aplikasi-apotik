@@ -491,6 +491,7 @@
                 });
 
                 // Event listener untuk hapus baris baru
+                /*
                 document.addEventListener('click', function(e) {
                     if (e.target.classList.contains('btn-delete-row')) {
                         const target = e.target.dataset.target;
@@ -498,6 +499,33 @@
                         updateTotalHargaEdit(target);
                     }
                 });
+                */
+                // Event listener untuk hapus baris baru (data sementara)
+                document.addEventListener('click', function(e) {
+                    if (e.target.classList.contains('btn-delete-row')) {
+                        e.preventDefault();
+
+                        const target = e.target.dataset.target;
+                        const row = e.target.closest('tr');
+
+                        Swal.fire({
+                            title: 'Apakah Anda yakin?',
+                            text: "Data ini akan dihapus dari tabel!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonColor: '#d33',
+                            cancelButtonColor: '#3085d6',
+                            confirmButtonText: 'Ya, hapus',
+                            cancelButtonText: 'Batal'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                row.remove();
+                                updateTotalHargaEdit(target);
+                            }
+                        });
+                    }
+                });
+
 
                 // Validasi sebelum submit
                 document.querySelectorAll('[id^="form-edit-"]').forEach(form => {
@@ -605,6 +633,32 @@
                         }
                     });
                 });
+            });
+        </script>
+
+        <script>
+            document.addEventListener('click', function(e) {
+                if (e.target.classList.contains('btn-delete-row')) {
+                    e.preventDefault(); // Jangan langsung hapus
+
+                    const button = e.target;
+                    const target = button.dataset.target;
+                    const row = button.closest('tr');
+
+                    Swal.fire({
+                        title: 'Yakin ingin menghapus data ini?',
+                        text: 'Data ini belum tersimpan ke database dan akan dihapus dari tabel.',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonText: 'Ya, Hapus',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            row.remove();
+                            updateTotalHargaEdit(target);
+                        }
+                    });
+                }
             });
         </script>
     @endforeach

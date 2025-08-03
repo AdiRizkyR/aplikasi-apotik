@@ -70,9 +70,8 @@
 <body>
 
     <div class="kop-surat">
-        <h2>E-Apotik</h2>
-        <p>Jl. Dummy Alamat No.123, Kecamatan Contoh, Kota Fiktif</p>
-        <p>Provinsi Sumatera Barat</p>
+        <h2>APOTEK ANTOKAN</h2>
+        <p>JL. UJUNG GURUN, PADANG BARAT, KOTA PADANG - SUMATERA BARAT</p>
     </div>
 
     <div class="garis"></div>

@@ -672,9 +672,36 @@
                     });
                 }
 
+                /*
                 function hapusItem(index) {
                     detailObats.splice(index, 1);
                     renderTable();
+                }
+                    */
+                function hapusItem(index) {
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: "Data ini akan dihapus dari tabel!",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Ya, hapus!',
+                        cancelButtonText: 'Batal'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            detailObats.splice(index, 1);
+                            renderTable();
+
+                            Swal.fire({
+                                title: 'Dihapus!',
+                                text: 'Data telah berhasil dihapus.',
+                                icon: 'success',
+                                timer: 1500,
+                                showConfirmButton: false
+                            });
+                        }
+                    });
                 }
 
                 function confirmDelete(e) {

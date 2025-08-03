@@ -80,35 +80,81 @@ class viewController extends Controller
     // end::data obat
 
     // begin::obat
+    // public function obat()
+    // {
+    //     $now = Carbon::now();
+    //     $limit = $now->copy()->addMonth(); // Batas expired 1 bulan ke depan
+
+    //     $allObats = Obat::with('dataObat')->get();
+
+    //     $groupedObats = [];
+
+    //     foreach ($allObats as $obat) {
+    //         // Hanya proses jika expired-nya masih lebih dari 1 bulan ke depan
+    //         if ($obat->expired >= $limit) {
+    //             $key = $obat->data_obat_id . '-' . $obat->harga;
+
+    //             if (!isset($groupedObats[$key])) {
+    //                 $groupedObats[$key] = [
+    //                     'nama' => $obat->dataObat->nama,
+    //                     'no_batch' => $obat->no_batch,
+    //                     'stok' => $obat->stok,
+    //                     'harga' => $obat->harga,
+    //                     'expired' => $obat->expired,
+    //                     'id' => $obat->id, // bisa dipakai untuk aksi edit/hapus
+    //                 ];
+    //             } else {
+    //                 $groupedObats[$key]['stok'] += $obat->stok;
+
+    //                 if ($obat->expired < $groupedObats[$key]['expired']) {
+    //                     $groupedObats[$key]['expired'] = $obat->expired;
+    //                 }
+    //             }
+    //         }
+    //     }
+
+    //     return view('obat.obat', [
+    //         'obats' => collect($groupedObats),
+    //         'allObats' => $allObats,
+    //     ]);
+    // }
+
     public function obat()
     {
         $now = Carbon::now();
         $limit = $now->copy()->addMonth(); // Batas expired 1 bulan ke depan
 
         $allObats = Obat::with('dataObat')->get();
-
         $groupedObats = [];
 
         foreach ($allObats as $obat) {
-            // Hanya proses jika expired-nya masih lebih dari 1 bulan ke depan
-            if ($obat->expired >= $limit) {
-                $key = $obat->data_obat_id . '-' . $obat->harga;
+            $key = $obat->data_obat_id . '-' . $obat->harga;
 
-                if (!isset($groupedObats[$key])) {
-                    $groupedObats[$key] = [
-                        'nama' => $obat->dataObat->nama,
-                        'no_batch' => $obat->no_batch,
-                        'stok' => $obat->stok,
-                        'harga' => $obat->harga,
-                        'expired' => $obat->expired,
-                        'id' => $obat->id, // bisa dipakai untuk aksi edit/hapus
-                    ];
-                } else {
-                    $groupedObats[$key]['stok'] += $obat->stok;
+            // Tentukan status expired (misal: "aman", "hampir expired", atau "expired")
+            $statusExpired = 'aman';
+            if ($obat->expired < $now) {
+                $statusExpired = 'expired';
+            } elseif ($obat->expired <= $limit) {
+                $statusExpired = 'hampir expired';
+            }
 
-                    if ($obat->expired < $groupedObats[$key]['expired']) {
-                        $groupedObats[$key]['expired'] = $obat->expired;
-                    }
+            if (!isset($groupedObats[$key])) {
+                $groupedObats[$key] = [
+                    'nama' => $obat->dataObat->nama,
+                    'no_batch' => $obat->no_batch,
+                    'stok' => $obat->stok,
+                    'harga' => $obat->harga,
+                    'expired' => $obat->expired,
+                    'id' => $obat->id,
+                    'status_expired' => $statusExpired, // penanda status
+                ];
+            } else {
+                $groupedObats[$key]['stok'] += $obat->stok;
+
+                // Ambil expired terdekat
+                if ($obat->expired < $groupedObats[$key]['expired']) {
+                    $groupedObats[$key]['expired'] = $obat->expired;
+                    $groupedObats[$key]['status_expired'] = $statusExpired; // update status expired juga
                 }
             }
         }
@@ -118,6 +164,7 @@ class viewController extends Controller
             'allObats' => $allObats,
         ]);
     }
+
 
     // end::obat
 
