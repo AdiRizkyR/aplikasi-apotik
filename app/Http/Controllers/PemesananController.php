@@ -104,7 +104,11 @@ class PemesananController extends Controller
 
             DB::commit();
 
-            return redirect()->route('pemesanan')->with('success', 'Data pemesanan berhasil disimpan.');
+            // return redirect()->route('pemesanan')->with('success', 'Data pemesanan berhasil disimpan.');
+            return redirect()->route('pemesanan')->with([
+                'success' => 'Data pemesanan berhasil disimpan.',
+                'print_id' => $pemesanan->id
+            ]);
         } catch (\Exception $e) {
             DB::rollback();
             return back()->with('error', 'Terjadi kesalahan saat menyimpan data.')->withErrors(['msg' => $e->getMessage()]);

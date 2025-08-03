@@ -63,10 +63,10 @@
                     <tr>
                         <th>NO</th>
                         <th>NAMA OBAT</th>
-                        <th>NOMOR BATCH</th>
+                        {{--  <th>NOMOR BATCH</th>  --}}
                         <th>STOK</th>
                         <th>HARGA</th>
-                        <th>EXPIRED</th>
+                        {{--  <th>EXPIRED</th>  --}}
                         <th>AKSI</th>
                     </tr>
                 </thead>
@@ -75,10 +75,10 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item['nama'] }}</td>
-                            <td>{{ $item['no_batch'] }}</td>
+                            {{--  <td>{{ $item['no_batch'] }}</td>  --}}
                             <td>{{ $item['stok'] }}</td>
                             <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($item['expired'])->format('d-m-Y') }}</td>
+                            {{--  <td>{{ \Carbon\Carbon::parse($item['expired'])->format('d-m-Y') }}</td>  --}}
                             <td>
                                 <button class="btn btn-sm btn-info" data-toggle="modal"
                                     data-target="#detailModal-{{ $item['id'] }}">

@@ -18,9 +18,10 @@
                             <label for="jenis" class="form-label">Pilih Jenis Laporan</label>
                             <select name="jenis" id="jenis" class="form-control" required>
                                 <option value="">-- Pilih Salah Satu --</option>
+                                <option value="data_obat">Data Obat</option>
+                                <option value="laporan">Laporan Obat</option>
                                 <option value="expired">Obat Expired</option>
                                 <option value="stok">Stok Obat</option>
-                                <option value="laporan">Laporan Obat</option>
                             </select>
                         </div>
 

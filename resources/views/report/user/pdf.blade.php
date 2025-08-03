@@ -87,34 +87,74 @@
     @if ($data->isEmpty())
         <p style="text-align:center;"><em>Data {{ $labelJenis }} tidak tersedia</em></p>
     @else
-        <table>
-            <thead>
-                <tr>
-                    <th>NO</th>
-                    @foreach ($data->first()->getAttributes() as $col => $val)
-                        @continue($col === 'remember_token')
-                        @continue($jenis !== 'users' && in_array($col, ['password']))
-                        @continue(in_array($col, ['created_at', 'updated_at']))
-
-                        <th>{{ strtoupper(str_replace('_', ' ', $col)) }}</th>
-                    @endforeach
-                </tr>
-            </thead>
-            <tbody>
-                @foreach ($data as $index => $row)
+        @if ($jenis === 'users')
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ $index + 1 }}</td>
-                        @foreach ($row->getAttributes() as $col => $val)
-                            @continue($col === 'remember_token')
-                            @continue($jenis !== 'users' && in_array($col, ['password']))
-                            @continue(in_array($col, ['created_at', 'updated_at']))
-
-                            <td>{{ $val }}</td>
-                        @endforeach
+                        <th>NO</th>
+                        <th>ID USER</th>
+                        <th>USERNAME</th>
+                        <th>PASSWORD</th>
                     </tr>
-                @endforeach
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    @foreach ($data as $index => $row)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td class="text-center">{{ $row->id }}</td>
+                            <td class="text-center">{{ $row->username }}</td>
+                            <td class="text-center">{{ $row->password }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @elseif ($jenis === 'suppliers')
+            <table>
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>ID SUPPLIER</th>
+                        <th>NAMA SUPPLIER</th>
+                        <th>NOHP</th>
+                        <th>ALAMAT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data as $index => $row)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $row->id }}</td>
+                            <td>{{ $row->nama }}</td>
+                            <td>{{ $row->nohp }}</td>
+                            <td>{{ $row->alamat }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @elseif ($jenis === 'pelanggans')
+            <table>
+                <thead>
+                    <tr>
+                        <th>NO</th>
+                        <th>ID PELANGGAN</th>
+                        <th>NAMA PELANGGAN</th>
+                        <th>NOHP</th>
+                        <th>ALAMAT</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($data as $index => $row)
+                        <tr>
+                            <td>{{ $index + 1 }}</td>
+                            <td>{{ $row->id }}</td>
+                            <td>{{ $row->nama }}</td>
+                            <td>{{ $row->nohp }}</td>
+                            <td>{{ $row->alamat }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     @endif
 
     <div class="ttd">

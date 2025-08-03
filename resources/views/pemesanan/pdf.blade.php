@@ -70,8 +70,9 @@
 <body>
 
     <div class="kop-surat">
-        <h2>APOTEK ANTOKAN</h2>
-        <p>JL. UJUNG GURUN, PADANG BARAT, KOTA PADANG - SUMATERA BARAT</p>
+        <h2><b>APOTEK ANTOKAN</b></h2>
+        <p><b>JL.</b> UJUNG GURUN, PADANG BARAT, KOTA PADANG</p>
+        <p><strong>SUMATERA BARAT</strong></p>
     </div>
 
     <div class="garis"></div>
@@ -88,6 +89,10 @@
     @if ($jenis == 'pemesanans')
         @foreach ($data as $index => $pemesanan)
             <table>
+                <tr>
+                    <th style="text-align: left">ID Pemesanan</th>
+                    <td>{{ $pemesanan->id ?? '-' }}</td>
+                </tr>
                 <tr>
                     <th style="text-align: left">Penanggung Jawab</th>
                     <td>{{ $pemesanan->user->name ?? '-' }}</td>

@@ -428,7 +428,8 @@ class viewController extends Controller
                     'data' => $data,
                     'jenis' => $request->jenis,
                     'start' => $start,
-                    'end' => $end
+                    'end' => $end,
+                    'waktu' => $request->waktu // WAJIB agar Blade bisa bedakan jenis tampilan
                 ])->setPaper('a4', 'landscape');
 
                 return $pdf->stream('laporan_obat_masuk.pdf');
@@ -480,10 +481,80 @@ class viewController extends Controller
             return view('report.obat.reportObat');
         }
 
+        // public function printReportObat(Request $request)
+        // {
+        //     $request->validate([
+        //         'jenis' => 'required|in:expired,stok,laporan',
+        //     ]);
+
+        //     $jenis = $request->jenis;
+        //     $today = now();
+
+        //     switch ($jenis) {
+        //         case 'expired':
+        //             $data = Obat::with('dataObat')
+        //                 ->whereDate('expired', '<', $today)
+        //                 ->get();
+        //             break;
+
+        //         case 'stok':
+        //             $data = Obat::with('dataObat')
+        //                 ->where(function ($query) use ($today) {
+        //                     $query->whereNull('expired')
+        //                         ->orWhereDate('expired', '>=', $today->addMonth());
+        //                 })
+        //                 ->get()
+        //                 ->groupBy(fn($item) => $item->dataObat->nama . '-' . $item->harga)
+        //                 ->map(function ($group) {
+        //                     return [
+        //                         'nama' => $group->first()->dataObat->nama,
+        //                         'kategori' => $group->first()->dataObat->kategori ?? '-',
+        //                         'jenis' => $group->first()->dataObat->jenis ?? '-',
+        //                         'no_batch' => $group->first()->no_batch,
+        //                         'harga' => $group->first()->harga,
+        //                         'stok' => $group->sum('stok'),
+        //                     ];
+        //                 })->values();
+        //             break;
+
+        //         case 'laporan':
+        //             $data = Obat::with('dataObat')
+        //                 ->where(function ($query) use ($today) {
+        //                     $query->whereNull('expired')
+        //                         ->orWhereDate('expired', '>=', $today);
+        //                 })
+        //                 ->get()
+        //                 ->groupBy(fn($item) => $item->dataObat->nama . '-' . $item->harga)
+        //                 ->map(function ($group) {
+        //                     return [
+        //                         'nama' => $group->first()->dataObat->nama,
+        //                         'kategori' => $group->first()->dataObat->kategori ?? '-',
+        //                         'jenis' => $group->first()->dataObat->jenis ?? '-',
+        //                         'no_batch' => $group->first()->no_batch,
+        //                         'harga' => $group->first()->harga,
+        //                         'stok' => $group->sum('stok'),
+        //                         'expired_terdekat' => $group->min('expired'),
+        //                     ];
+        //                 })->values();
+        //             break;
+
+        //         default:
+        //             abort(404);
+        //     }
+
+        //     $pdf = Pdf::loadView('report.obat.pdf', [
+        //         'data' => $data,
+        //         'jenis' => $jenis,
+        //         'tanggal' => now()
+        //     ])->setPaper('a4', 'portrait');
+
+        //     return $pdf->stream("laporan_obat_{$jenis}_" . now()->format('Ymd_His') . ".pdf");
+        // }
+
         public function printReportObat(Request $request)
         {
             $request->validate([
-                'jenis' => 'required|in:expired,stok,laporan',
+                'jenis' => 'required|in:expired,stok,laporan,data_obat',
             ]);
 
             $jenis = $request->jenis;
@@ -500,7 +571,7 @@ class viewController extends Controller
                     $data = Obat::with('dataObat')
                         ->where(function ($query) use ($today) {
                             $query->whereNull('expired')
-                                ->orWhereDate('expired', '>=', $today->addMonth());
+                                ->orWhereDate('expired', '>=', $today->copy()->addMonth());
                         })
                         ->get()
                         ->groupBy(fn($item) => $item->dataObat->nama . '-' . $item->harga)
@@ -537,6 +608,10 @@ class viewController extends Controller
                         })->values();
                     break;
 
+                case 'data_obat':
+                    $data = DataObat::all(); // ambil semua data obat dari tabel data_obats
+                    break;
+
                 default:
                     abort(404);
             }
@@ -549,6 +624,7 @@ class viewController extends Controller
 
             return $pdf->stream("laporan_obat_{$jenis}_" . now()->format('Ymd_His') . ".pdf");
         }
+
         // end obat
     // end::report
 }

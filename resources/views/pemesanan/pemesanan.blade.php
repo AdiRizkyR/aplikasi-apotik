@@ -390,6 +390,12 @@
     </script>
 @endif
 
+@if (session('print_id'))
+    <script>
+        window.open("{{ route('pemesanan.cetak', session('print_id')) }}", "_blank");
+    </script>
+@endif
+
 @if (session('error'))
     <script>
         Swal.fire('Gagal!', '{{ session('error') }}', 'error');
@@ -428,15 +434,19 @@
                             <td>{{ \Carbon\Carbon::parse($pemesanan->tanggal_pesan)->format('d-m-Y') }}</td>
                             {{--  <td>Rp{{ number_format($pemesanan->total, 2, ',', '.') }}</td>  --}}
                             <td>
-                                <div class="d-flex justify-content-center">
-                                    <button class="btn bg-gradient-info btn-sm" data-toggle="modal"
-                                        data-target="#modal-detail-{{ $pemesanan->id }}">Detail</button>
-                                    <a href="{{ route('pemesanan.cetak', $pemesanan->id) }}"
-                                        class="btn btn-warning btn-sm ml-1" target="_blank">
-                                        Cetak
-                                    </a>
+                                <div class="d-flex">
+                                    <div class="mr-1">
+                                        <button class="btn bg-gradient-info btn-sm" data-toggle="modal"
+                                            data-target="#modal-detail-{{ $pemesanan->id }}">Detail</button>
+                                    </div>
+                                    <div class="mr-1">
+                                        <a href="{{ route('pemesanan.cetak', $pemesanan->id) }}"
+                                            class="btn btn-warning btn-sm " target="_blank">
+                                            Cetak
+                                        </a>
+                                    </div>
                                     <form action="{{ route('pemesanan.destroy', $pemesanan->id) }}" method="POST"
-                                        onsubmit="return confirmDelete(event)" class="ml-1">
+                                        onsubmit="return confirmDelete(event)">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Hapus</button>
