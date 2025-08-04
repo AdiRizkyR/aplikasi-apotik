@@ -50,11 +50,11 @@
                 </form>
 
                 <div class="aksi text-center mt-3">
-                    <p class="mb-1">
+                    {{--  <p class="mb-1">
                         <a href="forgot-password.html">I forgot my password</a>
-                    </p>
+                    </p>  --}}
                     <p class="mb-0">
-                        <a href="{{ route('register') }}" class="text-center">Register a new membership</a>
+                        <a href="{{ route('register') }}" class="text-center">Register a new user</a>
                     </p>
                 </div>
             </div>
@@ -69,6 +69,21 @@
     <script src="{{ asset('template/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- AdminLTE App -->
     <script src="{{ asset('template/dist/js/adminlte.min.js') }}"></script>
+
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    @if (session('error'))
+        <script>
+            Swal.fire({
+                icon: 'error',
+                title: 'Login Gagal',
+                text: '{{ session('error') }}',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'OK'
+            });
+        </script>
+    @endif
 </body>
 
 </html>

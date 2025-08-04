@@ -30,10 +30,10 @@
                 <!-- Tombol Aksi -->
                 <div class="d-flex flex-column mt-3">
                     <!-- Tombol Trigger Modal -->
-                    <button type="button" class="btn btn-sm btn-outline-primary mb-2" data-toggle="modal"
+                    {{--  <button type="button" class="btn btn-sm btn-outline-primary mb-2" data-toggle="modal"
                         data-target="#modal-lg">
                         <i class="fas fa-key mr-1"></i> Update Password
-                    </button>
+                    </button>  --}}
                     <form action="{{ route('logout') }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-sm btn-outline-danger btn-block">

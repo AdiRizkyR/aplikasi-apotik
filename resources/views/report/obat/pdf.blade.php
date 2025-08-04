@@ -122,7 +122,8 @@
                     @foreach ($data as $index => $item)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $item->id }}</td>
+                            {{--  <td>{{ $item->id }}</td>  --}}
+                            <td>OBT{{ str_pad($item->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $item->nama }}</td>
                             <td>{{ $item->jenis }}</td>
                             <td>{{ $item->kategori }}</td>

@@ -5,6 +5,12 @@
     <li class="breadcrumb-item active">Penjualan</li>
 @endsection
 
+@if (session('open_pdf_id'))
+    <script>
+        window.open("{{ route('penjualans.cetak', session('open_pdf_id')) }}", "_blank");
+    </script>
+@endif
+
 @section('content')
     <div class="card">
         <div class="card-header">
@@ -45,6 +51,10 @@
                                 <div class="d-flex justify-content-center">
                                     <button class="btn bg-gradient-info btn-sm mr-1" data-toggle="modal"
                                         data-target="#modal-detail-{{ $item->id }}">Detail</button>
+                                    <a href="{{ route('penjualans.cetak', $item->id) }}" target="_blank"
+                                        class="btn btn-sm btn-success">
+                                        Cetak
+                                    </a>
                                 </div>
                             </td>
                         </tr>
@@ -155,10 +165,6 @@
                                     <input type="date" name="tanggal_pesan" class="form-control" required>
                                 </div>
 
-                                {{--  <div class="form-group">
-                                    <label>Tanggal Terima</label>
-                                    <input type="date" name="tanggal_terima" class="form-control" required>
-                                </div>  --}}
                                 <input type="hidden" name="tanggal_terima"
                                     value="{{ \Carbon\Carbon::now()->toDateString() }}">
 
@@ -274,27 +280,6 @@
                     document.getElementById('jumlah_beli').value = '';
                     select.value = '';
                 });
-
-                /*
-                                                                                        function renderTabel() {
-                                                                                            const tbody = document.getElementById('tabel-detail-obat');
-                                                                                            tbody.innerHTML = '';
-
-                                                                                            detailPenjualan.forEach((item, index) => {
-                                                                                                tbody.innerHTML += `
-                <tr>
-                    <td>${item.nama}</td>
-                    <td>${item.jumlah}</td>
-                    <td>Rp${item.harga.toLocaleString('id-ID')}</td>
-                    <td>Rp${item.subtotal.toLocaleString('id-ID')}</td>
-                    <td>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="hapusItem(${index})">Hapus</button>
-                    </td>
-                </tr>
-            `;
-                                                                                            });
-                                                                                        }
-                                                                                        */
 
                 function renderTabel() {
                     const tbody = document.getElementById('tabel-detail-obat');

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 use App\Models\Penjualan;
 use App\Models\DetailPenjualan;
@@ -11,6 +12,24 @@ use App\Models\Obat;
 
 class PenjualanController extends Controller
 {
+    public function cetak($id)
+    {
+        $penjualan = \App\Models\Penjualan::with([
+            'user',
+            'pelanggan',
+            'detailPenjualans.obat.dataObat'
+        ])->findOrFail($id);
+
+        $jenis = 'penjualan';
+
+        // Karena pdf.blade.php dirancang untuk koleksi $data, bungkus jadi array
+        $data = collect([$penjualan]);
+
+        $pdf = Pdf::loadView('penjualan.pdf', compact('data', 'jenis'))->setPaper('a4');
+
+        return $pdf->stream("penjualan_{$penjualan->id}.pdf");
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -79,7 +98,12 @@ class PenjualanController extends Controller
 
             DB::commit();
 
-            return redirect()->route('penjualan')->with('success', 'Penjualan berhasil disimpan!');
+            return redirect()->route('penjualan')->with([
+                'success' => 'Penjualan berhasil disimpan!',
+                'open_pdf_id' => $penjualan->id
+            ]);
+
+            // return redirect()->route('penjualan')->with('success', 'Penjualan berhasil disimpan!');
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with('error', 'Gagal menyimpan penjualan: ' . $e->getMessage());

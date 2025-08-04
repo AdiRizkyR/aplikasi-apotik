@@ -87,6 +87,7 @@ Route::get('/', function () {
 
 // start route penjualan
     Route::get('/penjualan', [viewController::class, 'penjualan'])->name('penjualan')->middleware('auth');
+    Route::get('/penjualans/cetak/{id}', [PenjualanController::class, 'cetak'])->name('penjualans.cetak');
 
     // crud
     Route::post('/penjualans', [PenjualanController::class, 'store'])->name('penjualans.store');

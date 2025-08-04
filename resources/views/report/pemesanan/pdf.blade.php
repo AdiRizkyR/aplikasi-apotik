@@ -390,7 +390,9 @@
                                 <tr>
                                     @if ($i == 0)
                                         <td rowspan="{{ $rowspan }}">{{ $index + 1 }}</td>
-                                        <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>
+                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>  --}}
+                                        <td rowspan="{{ $rowspan }}">
+                                            PMS{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                                         <td rowspan="{{ $rowspan }}">
                                             {{ \Carbon\Carbon::parse($row->tanggal_pesan)->format('d-m-Y') }}</td>
                                         <td rowspan="{{ $rowspan }}">{{ optional($row->supplier)->nama }}</td>

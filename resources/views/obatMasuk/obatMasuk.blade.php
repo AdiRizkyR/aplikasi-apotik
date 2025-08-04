@@ -352,7 +352,6 @@
                                 'price-input')) {
                             const targetId = e.target.dataset.target;
                             const rowId = e.target.dataset.row;
-
                             if (targetId == target) {
                                 updateRowSubtotal(targetId, rowId);
                                 updateTotalHargaEdit(targetId);
@@ -360,10 +359,21 @@
                         }
                     });
                 }
+                //fungsi untuk update subtotal
+                document.addEventListener('input', function(e) {
+                    if (e.target.classList.contains('quantity-input')) {
+                        const input = e.target;
+                        const row = input.dataset.row;
+                        const target = input.dataset.target;
+                        updateRowSubtotal(target, row);
+                    }
+                });
+
 
                 // Fungsi untuk update subtotal per baris
                 function updateRowSubtotal(target, rowId) {
-                    const row = document.querySelector(`tr[data-row-id="${rowId}"]`);
+                    const tbody = document.getElementById(`edit-detail-body-${target}`);
+                    const row = tbody?.querySelector(`tr[data-row-id="${rowId}"]`);
                     if (!row) return;
 
                     const quantityInput = row.querySelector(`[name*="[jumlah_beli]"]`);

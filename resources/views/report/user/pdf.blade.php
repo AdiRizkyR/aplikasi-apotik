@@ -101,7 +101,8 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td class="text-center">{{ $index + 1 }}</td>
-                            <td class="text-center">{{ $row->id }}</td>
+                            {{--  <td class="text-center">{{ $row->id }}</td>  --}}
+                            <td class="text-center">USR{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td class="text-center">{{ $row->username }}</td>
                             <td class="text-center">{{ $row->password }}</td>
                         </tr>
@@ -123,7 +124,8 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $row->id }}</td>
+                            {{--  <td>{{ $row->id }}</td>  --}}
+                            <td>SPL{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $row->nama }}</td>
                             <td>{{ $row->nohp }}</td>
                             <td>{{ $row->alamat }}</td>
@@ -146,7 +148,8 @@
                     @foreach ($data as $index => $row)
                         <tr>
                             <td>{{ $index + 1 }}</td>
-                            <td>{{ $row->id }}</td>
+                            {{--  <td>{{ $row->id }}</td>  --}}
+                            <td>PLG{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td>{{ $row->nama }}</td>
                             <td>{{ $row->nohp }}</td>
                             <td>{{ $row->alamat }}</td>

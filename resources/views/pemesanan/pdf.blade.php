@@ -83,7 +83,7 @@
     @endphp
 
     <div class="judul-laporan">
-        <h3>Laporan Data {{ ucfirst($labelJenis) }}</h3>
+        <h3>Laporan Faktur {{ ucfirst($labelJenis) }}</h3>
     </div>
 
     @if ($jenis == 'pemesanans')
@@ -91,7 +91,10 @@
             <table>
                 <tr>
                     <th style="text-align: left">ID Pemesanan</th>
-                    <td>{{ $pemesanan->id ?? '-' }}</td>
+                    {{--  <td>{{ $pemesanan->id ?? '-' }}</td>  --}}
+                    <td>
+                        {{ isset($pemesanan->id) ? 'PMS' . str_pad($pemesanan->id, 5, '0', STR_PAD_LEFT) : '-' }}
+                    </td>
                 </tr>
                 <tr>
                     <th style="text-align: left">Penanggung Jawab</th>

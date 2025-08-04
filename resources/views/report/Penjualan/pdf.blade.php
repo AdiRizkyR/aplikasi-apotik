@@ -370,7 +370,9 @@
                                 <tr>
                                     @if ($i == 0)
                                         <td rowspan="{{ $rowspan }}">{{ $index + 1 }}</td>
-                                        <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>
+                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>  --}}
+                                        <td rowspan="{{ $rowspan }}">
+                                            PJL{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                                         <td>{{ $dataObat->nama ?? '-' }}</td>
                                         {{--  <td rowspan="{{ $rowspan }}">{{ $row->user->name ?? '-' }}</td>  --}}
                                         {{--  <td rowspan="{{ $rowspan }}">{{ $row->pelanggan->nama ?? '-' }}</td>  --}}

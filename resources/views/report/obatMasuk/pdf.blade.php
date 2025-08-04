@@ -338,7 +338,10 @@
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $row->pemesanan->id ?? '-' }}</td>
+                                {{--  <td>{{ $row->pemesanan->id ?? '-' }}</td>  --}}
+                                <td>
+                                    {{ isset($row->pemesanan->id) ? 'PMS' . str_pad($row->pemesanan->id, 5, '0', STR_PAD_LEFT) : '-' }}
+                                </td>
                                 <td>{{ \Carbon\Carbon::parse($row->tanggal_terima)->format('d-m-Y') }}</td>
                                 {{--  <td>{{ $row->pemesanan->user->name ?? '-' }}</td>  --}}
                                 <td>{{ $row->pemesanan->supplier->nama ?? '-' }}</td>
