@@ -723,6 +723,7 @@ class viewController extends Controller
                     break;
 
                 case 'laporan':
+                    /*
                     $data = Obat::with('dataObat')
                         ->where(function ($query) use ($today) {
                             $query->whereNull('expired')
@@ -740,7 +741,39 @@ class viewController extends Controller
                                 'stok' => $group->sum('stok'),
                                 'expired_terdekat' => $group->min('expired'),
                             ];
-                        })->values();
+                        })
+                        ->sortBy('nama') // << URUTKAN A-Z
+                        ->values();
+                        */
+                        $data = Obat::with('dataObat')
+                            ->where(function ($query) use ($today) {
+                                $query->whereNull('expired')
+                                    ->orWhereDate('expired', '>=', $today);
+                            })
+                            ->get()
+                            ->groupBy(fn($item) => implode('|', [
+                                $item->dataObat->nama,
+                                $item->dataObat->jenis ?? '-',
+                                $item->dataObat->kategori ?? '-',
+                            ]))
+                            ->map(function ($group, $key) {
+                                [$nama, $jenis, $kategori] = explode('|', $key);
+                                return [
+                                    'nama' => $nama,
+                                    'jenis' => $jenis,
+                                    'kategori' => $kategori,
+                                    'details' => $group->map(function ($item) {
+                                        return [
+                                            'no_batch' => $item->no_batch,
+                                            'harga' => $item->harga,
+                                            'stok' => $item->stok,
+                                            'expired' => $item->expired,
+                                        ];
+                                    }),
+                                ];
+                            })
+                            ->sortBy('nama') // Urutkan A-Z
+                            ->values();
                     break;
 
                 case 'data_obat':
