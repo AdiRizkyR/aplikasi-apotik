@@ -128,7 +128,8 @@ class viewController extends Controller
         $groupedObats = [];
 
         foreach ($allObats as $obat) {
-            $key = $obat->data_obat_id . '-' . $obat->harga;
+            // $key = $obat->data_obat_id . '-' . $obat->harga;
+            $key = $obat->data_obat_id;
 
             // Tentukan status expired (misal: "aman", "hampir expired", atau "expired")
             $statusExpired = 'aman';
@@ -158,14 +159,12 @@ class viewController extends Controller
                 }
             }
         }
-
         return view('obat.obat', [
-            'obats' => collect($groupedObats),
+            'obats' => collect($groupedObats)->sortBy('nama'), // Urutkan berdasarkan nama
             'allObats' => $allObats,
         ]);
+
     }
-
-
     // end::obat
 
     // begin::penjualan
@@ -202,6 +201,7 @@ class viewController extends Controller
         }
 
         $obats = collect($groupedObats);
+        // $obats = collect($groupedObats)->sortBy('nama')->values();
 
         return view('penjualan.penjualan', compact('penjualans', 'pelanggans', 'obats'));
     }
@@ -213,7 +213,8 @@ class viewController extends Controller
     {
         $pemesanans = Pemesanan::with(['user', 'supplier', 'detailPemesanans', 'obatMasuks'])->get();
         $suppliers = Supplier::all(); // Ambil semua supplier
-        $obats = DataObat::all();     // Ambil semua data obat
+        // $obats = DataObat::all();
+        $obats = DataObat::orderBy('nama', 'asc')->get();
 
         return view('pemesanan.pemesanan', compact('pemesanans', 'suppliers', 'obats'));
     }
@@ -346,11 +347,56 @@ class viewController extends Controller
                 return view('report.pemesanan.reportPemesanan');
             }
 
+            // public function reportPemesananPrint(Request $request)
+            // {
+            //     $query = Pemesanan::with(['user', 'supplier', 'detailPemesanans.dataObat']);
+
+            //     // Filter berdasarkan jenis
+            //     if ($request->filter !== 'all') {
+            //         if ($request->filter == 'user') {
+            //             $query->where('user_id', $request->filter_value);
+            //         } elseif ($request->filter == 'supplier') {
+            //             $query->where('supplier_id', $request->filter_value);
+            //         } elseif ($request->filter == 'obat') {
+            //             $query->whereHas('detailPemesanans', function ($q) use ($request) {
+            //                 $q->where('data_obat_id', $request->filter_value);
+            //             });
+            //         }
+            //     }
+
+            //     // Filter waktu
+            //     $start = $end = now();
+            //     if ($request->waktu == 'tanggal') {
+            //         $start = $end = $request->tanggal;
+            //         $query->whereDate('tanggal_pesan', $request->tanggal);
+            //     } elseif ($request->waktu == 'bulan') {
+            //         [$year, $month] = explode('-', $request->bulan);
+            //         $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
+            //         $start = Carbon::create($year, $month)->startOfMonth();
+            //         $end = Carbon::create($year, $month)->endOfMonth();
+            //     } elseif ($request->waktu == 'tahun') {
+            //         $query->whereYear('tanggal_pesan', $request->tahun);
+            //         $start = Carbon::create($request->tahun)->startOfYear();
+            //         $end = Carbon::create($request->tahun)->endOfYear();
+            //     }
+
+            //     $data = $query->get();
+
+            //     $pdf = Pdf::loadView('report.pemesanan.pdf', [
+            //         'data' => $data,
+            //         'jenis' => 'pemesanans',
+            //         'start' => $start,
+            //         'end' => $end
+            //     ])->setPaper('a4', 'landscape'); // atur ukuran dan orientasi landscape
+
+            //     return $pdf->stream('laporan_pemesanan.pdf');
+            // }
+
             public function reportPemesananPrint(Request $request)
             {
                 $query = Pemesanan::with(['user', 'supplier', 'detailPemesanans.dataObat']);
 
-                // Filter berdasarkan jenis
+                // Filter berdasarkan jenis (opsional, kalau kamu pakai filter user/supplier/obat)
                 if ($request->filter !== 'all') {
                     if ($request->filter == 'user') {
                         $query->where('user_id', $request->filter_value);
@@ -364,19 +410,24 @@ class viewController extends Controller
                 }
 
                 // Filter waktu
-                $start = $end = now();
+                $start = $end = now(); // default
+
                 if ($request->waktu == 'tanggal') {
                     $start = $end = $request->tanggal;
                     $query->whereDate('tanggal_pesan', $request->tanggal);
                 } elseif ($request->waktu == 'bulan') {
                     [$year, $month] = explode('-', $request->bulan);
-                    $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
                     $start = Carbon::create($year, $month)->startOfMonth();
                     $end = Carbon::create($year, $month)->endOfMonth();
+                    $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
                 } elseif ($request->waktu == 'tahun') {
-                    $query->whereYear('tanggal_pesan', $request->tahun);
                     $start = Carbon::create($request->tahun)->startOfYear();
                     $end = Carbon::create($request->tahun)->endOfYear();
+                    $query->whereYear('tanggal_pesan', $request->tahun);
+                } elseif ($request->waktu == 'periode') {
+                    $start = $request->tanggal_awal;
+                    $end = $request->tanggal_akhir;
+                    $query->whereBetween('tanggal_pesan', [$start, $end]);
                 }
 
                 $data = $query->get();
@@ -386,7 +437,7 @@ class viewController extends Controller
                     'jenis' => 'pemesanans',
                     'start' => $start,
                     'end' => $end
-                ])->setPaper('a4', 'landscape'); // atur ukuran dan orientasi landscape
+                ])->setPaper('a4', 'landscape');
 
                 return $pdf->stream('laporan_pemesanan.pdf');
             }
@@ -397,6 +448,43 @@ class viewController extends Controller
             {
                 return view('report.obatMasuk.reportObatMasuk');
             }
+
+            // public function reportObatMasukPrint(Request $request)
+            // {
+            //     $query = ObatMasuk::with([
+            //         'pemesanan.user',
+            //         'pemesanan.supplier',
+            //         'detailObatMasuks.dataObat'
+            //     ]);
+
+            //     $start = $end = now();
+
+            //     if ($request->waktu === 'tanggal') {
+            //         $start = $end = $request->tanggal;
+            //         $query->whereDate('tanggal_terima', $request->tanggal);
+            //     } elseif ($request->waktu === 'bulan') {
+            //         [$year, $month] = explode('-', $request->bulan);
+            //         $query->whereYear('tanggal_terima', $year)->whereMonth('tanggal_terima', $month);
+            //         $start = Carbon::create($year, $month)->startOfMonth();
+            //         $end = Carbon::create($year, $month)->endOfMonth();
+            //     } elseif ($request->waktu === 'tahun') {
+            //         $query->whereYear('tanggal_terima', $request->tahun);
+            //         $start = Carbon::create($request->tahun)->startOfYear();
+            //         $end = Carbon::create($request->tahun)->endOfYear();
+            //     }
+
+            //     $data = $query->get();
+
+            //     $pdf = Pdf::loadView('report.obatMasuk.pdf', [
+            //         'data' => $data,
+            //         'jenis' => $request->jenis,
+            //         'start' => $start,
+            //         'end' => $end,
+            //         'waktu' => $request->waktu // WAJIB agar Blade bisa bedakan jenis tampilan
+            //     ])->setPaper('a4', 'landscape');
+
+            //     return $pdf->stream('laporan_obat_masuk.pdf');
+            // }
 
             public function reportObatMasukPrint(Request $request)
             {
@@ -420,6 +508,10 @@ class viewController extends Controller
                     $query->whereYear('tanggal_terima', $request->tahun);
                     $start = Carbon::create($request->tahun)->startOfYear();
                     $end = Carbon::create($request->tahun)->endOfYear();
+                } elseif ($request->waktu === 'periode') {
+                    $start = $request->tanggal_awal;
+                    $end = $request->tanggal_akhir;
+                    $query->whereBetween('tanggal_terima', [$start, $end]);
                 }
 
                 $data = $query->get();
@@ -429,7 +521,7 @@ class viewController extends Controller
                     'jenis' => $request->jenis,
                     'start' => $start,
                     'end' => $end,
-                    'waktu' => $request->waktu // WAJIB agar Blade bisa bedakan jenis tampilan
+                    'waktu' => $request->waktu
                 ])->setPaper('a4', 'landscape');
 
                 return $pdf->stream('laporan_obat_masuk.pdf');
@@ -442,11 +534,43 @@ class viewController extends Controller
             return view('report.penjualan.reportPenjualan');
         }
 
+        // public function reportPenjualanPrint(Request $request)
+        // {
+        //     $query = Penjualan::with(['user', 'pelanggan', 'detailPenjualans.obat.dataObat']);
+
+        //     $start = $end = now();
+
+        //     if ($request->waktu == 'tanggal') {
+        //         $start = $end = $request->tanggal;
+        //         $query->whereDate('tanggal_pesan', $request->tanggal);
+        //     } elseif ($request->waktu == 'bulan') {
+        //         [$year, $month] = explode('-', $request->bulan);
+        //         $query->whereYear('tanggal_pesan', $year)->whereMonth('tanggal_pesan', $month);
+        //         $start = Carbon::create($year, $month)->startOfMonth();
+        //         $end = Carbon::create($year, $month)->endOfMonth();
+        //     } elseif ($request->waktu == 'tahun') {
+        //         $query->whereYear('tanggal_pesan', $request->tahun);
+        //         $start = Carbon::create($request->tahun)->startOfYear();
+        //         $end = Carbon::create($request->tahun)->endOfYear();
+        //     }
+
+        //     $data = $query->get();
+
+        //     $pdf = Pdf::loadView('report.penjualan.pdf', [
+        //         'data' => $data,
+        //         'jenis' => $request->jenis,
+        //         'start' => $start,
+        //         'end' => $end
+        //     ])->setPaper('a4', 'landscape');
+
+        //     return $pdf->stream('laporan_penjualan.pdf');
+        // }
+
         public function reportPenjualanPrint(Request $request)
         {
             $query = Penjualan::with(['user', 'pelanggan', 'detailPenjualans.obat.dataObat']);
 
-            $start = $end = now();
+            $start = $end = now(); // default
 
             if ($request->waktu == 'tanggal') {
                 $start = $end = $request->tanggal;
@@ -460,6 +584,17 @@ class viewController extends Controller
                 $query->whereYear('tanggal_pesan', $request->tahun);
                 $start = Carbon::create($request->tahun)->startOfYear();
                 $end = Carbon::create($request->tahun)->endOfYear();
+            } elseif ($request->waktu == 'periode') {
+                // Validasi input tanggal_awal dan tanggal_akhir
+                $request->validate([
+                    'tanggal_awal' => 'required|date',
+                    'tanggal_akhir' => 'required|date|after_or_equal:tanggal_awal',
+                ]);
+
+                $start = Carbon::parse($request->tanggal_awal)->startOfDay();
+                $end = Carbon::parse($request->tanggal_akhir)->endOfDay();
+
+                $query->whereBetween('tanggal_pesan', [$start, $end]);
             }
 
             $data = $query->get();

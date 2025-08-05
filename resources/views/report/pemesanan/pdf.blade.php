@@ -293,6 +293,7 @@
         $judul = 'Laporan Pemesanan';
         $infoPeriode = '';
 
+        /*
         if (request()->waktu == 'tanggal') {
             $judul .= ' Pertanggal';
             $infoPeriode = 'Tanggal : ' . \Carbon\Carbon::parse($start)->format('d-m-Y');
@@ -302,6 +303,25 @@
         } elseif (request()->waktu == 'tahun') {
             $judul .= ' Pertahun';
             $infoPeriode = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+        }
+        */
+
+        if (request()->waktu == 'tanggal') {
+            $judul .= ' Pertanggal';
+            $infoPeriode = 'Tanggal : ' . \Carbon\Carbon::parse($start)->format('d-m-Y');
+        } elseif (request()->waktu == 'bulan') {
+            $judul .= ' Perbulan';
+            $infoPeriode = 'Bulan : ' . \Carbon\Carbon::parse($start)->format('m-Y');
+        } elseif (request()->waktu == 'tahun') {
+            $judul .= ' Pertahun';
+            $infoPeriode = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+        } elseif (request()->waktu == 'periode') {
+            $judul .= ' Pertanggal';
+            $infoPeriode =
+                'Periode : ' .
+                \Carbon\Carbon::parse($start)->format('d-m-Y') .
+                ' s/d ' .
+                \Carbon\Carbon::parse($end)->format('d-m-Y');
         }
     @endphp
 
@@ -375,7 +395,7 @@
                         <th>NAMA OBAT</th>
                         <th>KATEGORI</th>
                         <th>JENIS</th>
-                        <th>JUMLAH BELI</th>
+                        <th>JUMLAH</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -390,7 +410,6 @@
                                 <tr>
                                     @if ($i == 0)
                                         <td rowspan="{{ $rowspan }}">{{ $index + 1 }}</td>
-                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>  --}}
                                         <td rowspan="{{ $rowspan }}">
                                             PMS{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                                         <td rowspan="{{ $rowspan }}">
@@ -405,10 +424,6 @@
                             @endforeach
                         @endif
                     @endforeach
-                    {{--  <tr>
-                        <td colspan="7" style="text-align:right;"><strong>Total Keseluruhan</strong></td>
-                        <td><strong>{{ $totalKeseluruhan }} item</strong></td>
-                    </tr>  --}}
                 </tbody>
             </table>
         @endif

@@ -221,11 +221,21 @@
 
     <div class="garis"></div>
 
+    {{--  @php
+        $judulJenis = match ($waktu) {
+            'tanggal' => 'Pertanggal',
+            'bulan' => 'Perbulan',
+            'tahun' => 'Pertahun',
+            default => '',
+        };
+    @endphp  --}}
+
     @php
         $judulJenis = match ($waktu) {
             'tanggal' => 'Pertanggal',
             'bulan' => 'Perbulan',
             'tahun' => 'Pertahun',
+            'periode' => 'Pertanggal',
             default => '',
         };
     @endphp
@@ -237,6 +247,17 @@
     @if ($data->isEmpty())
         <p style="text-align: center;"><em>Tidak ada data pada periode ini.</em></p>
     @else
+        {{--  @php
+            $periodeLabel = '';
+            if ($waktu === 'tanggal') {
+                $periodeLabel = 'Tanggal : ' . \Carbon\Carbon::parse($start)->format('d-m-Y');
+            } elseif ($waktu === 'bulan') {
+                $periodeLabel = 'Bulan : ' . \Carbon\Carbon::parse($start)->format('m-Y');
+            } elseif ($waktu === 'tahun') {
+                $periodeLabel = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+            }
+        @endphp  --}}
+
         @php
             $periodeLabel = '';
             if ($waktu === 'tanggal') {
@@ -245,6 +266,12 @@
                 $periodeLabel = 'Bulan : ' . \Carbon\Carbon::parse($start)->format('m-Y');
             } elseif ($waktu === 'tahun') {
                 $periodeLabel = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+            } elseif ($waktu === 'periode') {
+                $periodeLabel =
+                    'Periode : ' .
+                    \Carbon\Carbon::parse($start)->format('d-m-Y') .
+                    ' s/d ' .
+                    \Carbon\Carbon::parse($end)->format('d-m-Y');
             }
         @endphp
 
@@ -318,14 +345,11 @@
                         <th>NO</th>
                         <th>ID PEMESANAN</th>
                         <th>TANGGAL TERIMA</th>
-                        {{--  <th>PENANGGUNG JAWAB</th>  --}}
                         <th>SUPPLIER</th>
                         <th>NAMA OBAT</th>
-                        {{--  <th>NO BATCH</th>  --}}
                         <th>EXPIRED</th>
-                        <th>STOK</th>
+                        <th>JUMLAH OBAT MASUK</th>
                         <th>HARGA SATUAN</th>
-                        {{--  <th>HARGA JUAL</th>  --}}
                         <th>SUBTOTAL</th>
                     </tr>
                 </thead>
@@ -338,19 +362,15 @@
                             @endphp
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                {{--  <td>{{ $row->pemesanan->id ?? '-' }}</td>  --}}
                                 <td>
                                     {{ isset($row->pemesanan->id) ? 'PMS' . str_pad($row->pemesanan->id, 5, '0', STR_PAD_LEFT) : '-' }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($row->tanggal_terima)->format('d-m-Y') }}</td>
-                                {{--  <td>{{ $row->pemesanan->user->name ?? '-' }}</td>  --}}
                                 <td>{{ $row->pemesanan->supplier->nama ?? '-' }}</td>
                                 <td>{{ $detail->dataObat->nama ?? '-' }}</td>
-                                {{--  <td>{{ $detail->no_batch ?? '-' }}</td>  --}}
                                 <td>{{ \Carbon\Carbon::parse($detail->expired)->format('d-m-Y') }}</td>
                                 <td>{{ $detail->jumlah_beli }}</td>
                                 <td>Rp {{ number_format($detail->harga_beli, 0, ',', '.') }}</td>
-                                {{--  <td>Rp {{ number_format($detail->harga_jual ?? 0, 0, ',', '.') }}</td>  --}}
                                 <td>Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
                             </tr>
                         @endforeach

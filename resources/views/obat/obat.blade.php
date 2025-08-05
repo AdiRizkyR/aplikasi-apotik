@@ -63,10 +63,7 @@
                     <tr>
                         <th>NO</th>
                         <th>NAMA OBAT</th>
-                        {{--  <th>NOMOR BATCH</th>  --}}
                         <th>STOK</th>
-                        <th>HARGA</th>
-                        {{--  <th>EXPIRED</th>  --}}
                         <th>AKSI</th>
                     </tr>
                 </thead>
@@ -75,10 +72,7 @@
                         <tr>
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $item['nama'] }}</td>
-                            {{--  <td>{{ $item['no_batch'] }}</td>  --}}
                             <td>{{ $item['stok'] }}</td>
-                            <td>Rp{{ number_format($item['harga'], 0, ',', '.') }}</td>
-                            {{--  <td>{{ \Carbon\Carbon::parse($item['expired'])->format('d-m-Y') }}</td>  --}}
                             <td>
                                 <button class="btn btn-sm btn-info" data-toggle="modal"
                                     data-target="#detailModal-{{ $item['id'] }}">
@@ -103,7 +97,7 @@
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="modalTitle-{{ $item['id'] }}">
-                            Detail Rincian Obat: {{ $item['nama'] }} | Rp{{ number_format($item['harga'], 0, ',', '.') }}
+                            Nama Obat : {{ $item['nama'] }} <!--| Rp{{ number_format($item['harga'], 0, ',', '.') }}-->
                         </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Tutup">
                             <span aria-hidden="true">&times;</span>
@@ -124,7 +118,7 @@
                             <tbody>
                                 @php
                                     $batch = $allObats->filter(function ($o) use ($item) {
-                                        return $o->dataObat->nama === $item['nama'] && $o->harga == $item['harga'];
+                                        return $o->dataObat->nama === $item['nama'];
                                     });
                                 @endphp
                                 @foreach ($batch as $index => $b)

@@ -184,9 +184,16 @@
                                             data-live-search="true">
                                             <option value="">-- Pilih Obat --</option>
                                             @foreach ($obats as $obat)
-                                                <option value="{{ $obat['id'] }}" data-harga="{{ $obat['harga'] }}"
+                                                {{--  <option value="{{ $obat['id'] }}" data-harga="{{ $obat['harga'] }}"
                                                     data-nama="{{ $obat['nama'] }}" data-stok="{{ $obat['stok'] }}">
                                                     {{ $obat['nama'] }} | Stok: {{ $obat['stok'] }} |
+                                                    Rp{{ number_format($obat['harga'], 0, ',', '.') }}
+                                                </option>  --}}
+                                                <option value="{{ $obat['id'] }}" data-harga="{{ $obat['harga'] }}"
+                                                    data-nama="{{ $obat['nama'] }}" data-stok="{{ $obat['stok'] }}"
+                                                    data-expired="{{ \Carbon\Carbon::parse($obat['expired'])->format('d-m-Y') }}">
+                                                    {{ $obat['nama'] }} | Stok: {{ $obat['stok'] }} | Exp:
+                                                    {{ \Carbon\Carbon::parse($obat['expired'])->format('d-m-Y') }} |
                                                     Rp{{ number_format($obat['harga'], 0, ',', '.') }}
                                                 </option>
                                             @endforeach

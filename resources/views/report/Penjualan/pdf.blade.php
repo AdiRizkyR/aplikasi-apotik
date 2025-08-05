@@ -254,8 +254,21 @@
             $judul .= ' Perbulan';
         } elseif (request()->waktu == 'tahun') {
             $judul .= ' Pertahun';
+        } elseif (request()->waktu == 'periode') {
+            $judul .= ' Pertanggal';
         }
 
+        // Info periode
+        /*
+        $infoPeriode = '';
+        if (request()->waktu == 'tanggal') {
+            $infoPeriode = 'Tanggal : ' . \Carbon\Carbon::parse($start)->format('d-m-Y');
+        } elseif (request()->waktu == 'bulan') {
+            $infoPeriode = 'Bulan : ' . \Carbon\Carbon::parse($start)->format('m-Y');
+        } elseif (request()->waktu == 'tahun') {
+            $infoPeriode = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+        }
+        */
         // Info periode
         $infoPeriode = '';
         if (request()->waktu == 'tanggal') {
@@ -264,6 +277,12 @@
             $infoPeriode = 'Bulan : ' . \Carbon\Carbon::parse($start)->format('m-Y');
         } elseif (request()->waktu == 'tahun') {
             $infoPeriode = 'Tahun : ' . \Carbon\Carbon::parse($start)->format('Y');
+        } elseif (request()->waktu == 'periode') {
+            $infoPeriode =
+                'Periode : ' .
+                \Carbon\Carbon::parse($start)->format('d-m-Y') .
+                ' s/d ' .
+                \Carbon\Carbon::parse($end)->format('d-m-Y');
         }
     @endphp
 
@@ -341,15 +360,10 @@
                     <tr>
                         <th>NO</th>
                         <th>ID PENJUALAN</th>
-                        {{--  <th>PENANGGUNG JAWAB</th>  --}}
-                        {{--  <th>PELANGGAN</th>  --}}
-                        <th>NAMA OBAT</th>
                         <th>TANGGAL PESAN</th>
-                        <th>TANGGAL TERIMA</th>
+                        <th>NAMA OBAT</th>
                         <th>JUMLAH BELI</th>
                         <th>HARGA</th>
-                        {{--  <th>JENIS</th>  --}}
-                        {{--  <th>KATEGORI</th>  --}}
                         <th>SUBTOTAL</th>
                     </tr>
                 </thead>
@@ -370,20 +384,12 @@
                                 <tr>
                                     @if ($i == 0)
                                         <td rowspan="{{ $rowspan }}">{{ $index + 1 }}</td>
-                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->id }}</td>  --}}
                                         <td rowspan="{{ $rowspan }}">
                                             PJL{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
-                                        <td>{{ $dataObat->nama ?? '-' }}</td>
-                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->user->name ?? '-' }}</td>  --}}
-                                        {{--  <td rowspan="{{ $rowspan }}">{{ $row->pelanggan->nama ?? '-' }}</td>  --}}
                                         <td rowspan="{{ $rowspan }}">
                                             {{ \Carbon\Carbon::parse($row->tanggal_pesan)->format('d-m-Y') }}</td>
-                                        <td rowspan="{{ $rowspan }}">
-                                            {{ \Carbon\Carbon::parse($row->tanggal_terima)->format('d-m-Y') }}</td>
                                     @endif
-
-                                    {{--  <td>{{ $dataObat->jenis ?? '-' }}</td>  --}}
-                                    {{--  <td>{{ $dataObat->kategori ?? '-' }}</td>  --}}
+                                    <td>{{ $dataObat->nama ?? '-' }}</td>
                                     <td>{{ $detail->jumlah_beli }}</td>
                                     <td>Rp {{ number_format($obat->harga ?? 0, 0, ',', '.') }}</td>
                                     <td>Rp {{ number_format($subtotal, 0, ',', '.') }}</td>
@@ -392,7 +398,7 @@
                         @endif
                     @endforeach
                     <tr>
-                        <td colspan="7" style="text-align:right;"><strong>Total Keseluruhan</strong></td>
+                        <td colspan="6" style="text-align:right;"><strong>Total Keseluruhan</strong></td>
                         <td><strong>Rp {{ number_format($totalKeseluruhan, 0, ',', '.') }}</strong></td>
                     </tr>
                 </tbody>

@@ -21,7 +21,7 @@
                                 <option value="data_obat">Data Obat</option>
                                 <option value="laporan">Laporan Obat</option>
                                 <option value="expired">Obat Expired</option>
-                                <option value="stok">Stok Obat</option>
+                                {{--  <option value="stok">Stok Obat</option>  --}}
                             </select>
                         </div>
 
