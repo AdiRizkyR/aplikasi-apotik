@@ -125,7 +125,7 @@
                             @endif
                         </tr>
                     @endforeach
-                </tbody>  --}}
+                </tbody>
                 <tbody>
                     @foreach ($data as $index => $group)
                         @foreach ($group['details'] as $i => $detail)
@@ -143,7 +143,49 @@
                             </tr>
                         @endforeach
                     @endforeach
-                </tbody>
+                </tbody>  --}}
+
+                {{-- Untuk jenis selain 'laporan' --}}
+                @if ($jenis !== 'laporan')
+                    <tbody>
+                        @foreach ($data as $index => $item)
+                            <tr>
+                                <td>{{ $index + 1 }}</td>
+                                <td>{{ $item['nama'] ?? $item->dataObat->nama }}</td>
+                                <td>{{ $item['jenis'] ?? ($item->dataObat->jenis ?? '-') }}</td>
+                                <td>{{ $item['kategori'] ?? ($item->dataObat->kategori ?? '-') }}</td>
+                                <td>{{ $item['no_batch'] ?? $item->no_batch }}</td>
+                                <td>Rp {{ number_format($item['harga'] ?? $item->harga, 0, ',', '.') }}</td>
+                                <td>{{ $item['stok'] ?? $item->stok }}</td>
+                                @if ($jenis === 'expired')
+                                    <td>{{ \Carbon\Carbon::parse($item->expired)->format('d-m-Y') }}</td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </tbody>
+                @endif
+
+                {{-- Untuk jenis 'laporan' dengan grouping dan rowspan --}}
+                @if ($jenis === 'laporan')
+                    <tbody>
+                        @foreach ($data as $index => $group)
+                            @foreach ($group['details'] as $i => $detail)
+                                <tr>
+                                    @if ($i === 0)
+                                        <td rowspan="{{ count($group['details']) }}">{{ $index + 1 }}</td>
+                                        <td rowspan="{{ count($group['details']) }}">{{ $group['nama'] }}</td>
+                                        <td rowspan="{{ count($group['details']) }}">{{ $group['jenis'] }}</td>
+                                        <td rowspan="{{ count($group['details']) }}">{{ $group['kategori'] }}</td>
+                                    @endif
+                                    <td>{{ $detail['no_batch'] }}</td>
+                                    <td>Rp {{ number_format($detail['harga'], 0, ',', '.') }}</td>
+                                    <td>{{ $detail['stok'] }}</td>
+                                    <td>{{ \Carbon\Carbon::parse($detail['expired'])->format('d-m-Y') }}</td>
+                                </tr>
+                            @endforeach
+                        @endforeach
+                    </tbody>
+                @endif
             </table>
         @endif
     @endif
