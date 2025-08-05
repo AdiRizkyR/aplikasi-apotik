@@ -94,7 +94,6 @@
                         <th>NO</th>
                         <th>ID USER</th>
                         <th>USERNAME</th>
-                        <th>PASSWORD</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -104,7 +103,6 @@
                             {{--  <td class="text-center">{{ $row->id }}</td>  --}}
                             <td class="text-center">USR{{ str_pad($row->id, 5, '0', STR_PAD_LEFT) }}</td>
                             <td class="text-center">{{ $row->username }}</td>
-                            <td class="text-center">{{ $row->password }}</td>
                         </tr>
                     @endforeach
                 </tbody>

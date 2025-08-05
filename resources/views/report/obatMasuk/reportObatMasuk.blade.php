@@ -109,7 +109,7 @@
                                 <option value="">-- Pilih Salah Satu --</option>
                                 <option value="obat_masuks">Semua Obat Masuk</option>
                                 {{-- <option value="obat_masuks_tanggal">Berdasarkan Tanggal</option> --}}
-                                <option value="obat_masuks_periode">Berdasarkan Periode</option>
+                                <option value="obat_masuks_periode">Berdasarkan Tanggal</option>
                                 <option value="obat_masuks_bulan">Berdasarkan Bulan</option>
                                 <option value="obat_masuks_tahun">Berdasarkan Tahun</option>
                             </select>

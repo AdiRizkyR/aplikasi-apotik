@@ -107,7 +107,7 @@
                                 <option value="">-- Pilih Salah Satu --</option>
                                 <option value="penjualans">Semua Penjualan</option>
                                 {{-- <option value="penjualans_tanggal">Penjualan Berdasarkan Tanggal</option> --}}
-                                <option value="penjualans_periode">Penjualan Berdasarkan Periode</option>
+                                <option value="penjualans_periode">Penjualan Berdasarkan Tanggal</option>
                                 <option value="penjualans_bulan">Penjualan Berdasarkan Bulan</option>
                                 <option value="penjualans_tahun">Penjualan Berdasarkan Tahun</option>
                             </select>

@@ -115,7 +115,7 @@
                                 <option value="">-- Pilih Salah Satu --</option>
                                 <option value="pemesanans">Semua Pemesanan</option>
                                 <!-- <option value="pemesanans_tanggal">Pemesanan Berdasarkan Tanggal</option> -->
-                                <option value="pemesanans_periode">Pemesanan Berdasarkan Periode</option>
+                                <option value="pemesanans_periode">Pemesanan Berdasarkan Tanggal</option>
                                 <option value="pemesanans_bulan">Pemesanan Berdasarkan Bulan</option>
                                 <option value="pemesanans_tahun">Pemesanan Berdasarkan Tahun</option>
                             </select>

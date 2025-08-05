@@ -241,7 +241,7 @@
     @endphp
 
     <div class="judul-laporan">
-        <h3>Laporan Obat Masuk {{ $judulJenis }}</h3>
+        <h3>Laporan Pembelian {{ $judulJenis }}</h3>
     </div>
 
     @if ($data->isEmpty())
