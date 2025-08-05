@@ -49,7 +49,7 @@ class viewController extends Controller
     // begin::user
     public function user()
     {
-        $users = User::all(); // Mengambil semua data user
+        $users = User::orderBy('name', 'asc')->get(); // Mengambil semua data user
         return view('user.user', compact('users'));
     }
     // end::user
@@ -57,7 +57,7 @@ class viewController extends Controller
     // begin::pelanggan
     public function pelanggan()
     {
-        $pelanggans = Pelanggan::latest()->get(); // Mengambil semua data, urutkan dari terbaru
+        $pelanggans = Pelanggan::orderBy('nama', 'asc')->get(); // Mengambil semua data, urutkan dari terbaru
         return view('pelanggan.pelanggan', compact('pelanggans'));
     }
     // end::pelanggan
@@ -65,7 +65,7 @@ class viewController extends Controller
     // begin::supplier
     public function supplier()
     {
-        $suppliers = Supplier::latest()->get(); // ambil semua data supplier urut berdasarkan tanggal terbaru
+        $suppliers = Supplier::orderBy('nama', 'asc')->get(); // ambil semua data supplier urut berdasarkan tanggal terbaru
 
         return view('supplier.supplier', compact('suppliers'));
     }
@@ -171,7 +171,7 @@ class viewController extends Controller
     public function penjualan()
     {
         $penjualans = Penjualan::with(['user', 'pelanggan', 'detailPenjualans.obat.dataObat'])->get();
-        $pelanggans = Pelanggan::all();
+        $pelanggans = Pelanggan::orderBy('nama', 'asc')->get();
 
         $now = Carbon::now();
         $limit = $now->copy()->addMonth(); // batas expired
@@ -212,7 +212,7 @@ class viewController extends Controller
     public function pemesanan()
     {
         $pemesanans = Pemesanan::with(['user', 'supplier', 'detailPemesanans', 'obatMasuks'])->get();
-        $suppliers = Supplier::all(); // Ambil semua supplier
+        $suppliers = Supplier::orderBy('nama', 'asc')->get(); // Ambil semua supplier
         // $obats = DataObat::all();
         $obats = DataObat::orderBy('nama', 'asc')->get();
 
@@ -228,7 +228,7 @@ class viewController extends Controller
             'pemesanan.supplier',
             'detailObatMasuks.dataObat'
         ])->get();
-        $obats = DataObat::all();
+        $obats = DataObat::orderBy('nama', 'asc')->get();
 
         return view('obatMasuk.obatMasuk', compact('obatMasuks', 'obats'));
     }

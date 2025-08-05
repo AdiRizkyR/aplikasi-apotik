@@ -83,7 +83,7 @@
     @endphp
 
     <div class="judul-laporan">
-        <h3>Laporan Faktur {{ ucfirst($labelJenis) }}</h3>
+        <h3>Faktur {{ ucfirst($labelJenis) }}</h3>
     </div>
 
     @if ($jenis == 'pemesanans')
